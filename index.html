@@ -1,1266 +1,1911 @@
 <!DOCTYPE html>
 <html lang="ko">
-<head> <script async src="https://www.googletagmanager.com/gtag/js?id=G-5YW0T2C109"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-5YW0T2C109');
-    </script>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>끝말잇킹</title>
-<style>
-  :root{
-    --bg1:#2b1055; --bg2:#3f1f6e; --panel:#ffffff; --ink:#1e1440;
-    --gold:#ffcf3f; --gold-d:#e9a904; --line:#e7e0f5;
-    --p1:#ff5d73; --p2:#4d8bff; --p3:#37c26b; --p4:#ff9f2e;
-    --p5:#a361ff; --p6:#18c5c9;
-    --shadow: 0 18px 40px rgba(20,6,55,.35);
-    --shadow-sm: 0 8px 18px rgba(20,6,55,.18);
-    --gap: 12px;
-  }
-  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
-  html,body{height:100%;margin:0;}
-  body{
-    font-family:'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR','Nanum Gothic',sans-serif;
-    color:var(--ink);
-    background:
-      radial-gradient(1200px 700px at 15% -10%, #5a2ea0 0%, transparent 55%),
-      radial-gradient(1000px 600px at 100% 0%, #7a2f8f 0%, transparent 50%),
-      linear-gradient(160deg,var(--bg1),var(--bg2));
-    overflow:hidden;
-    touch-action:manipulation;
-  }
-  /* .app 높이를 100%로 설정하여 가용 뷰포트에 완전히 맞추고 스크롤 차단 */
-  .app{height:100%; display:flex; flex-direction:column; overflow:hidden;}
-  button{font-family:inherit; cursor:pointer; border:none; background:none; color:inherit;}
-  .hidden{display:none !important;}
 
-  /* ---------- Brand ---------- */
-  .brand{display:flex; align-items:center; gap:.4rem; font-weight:900;}
-  .brand .crown{font-size:1.05em; filter:drop-shadow(0 2px 0 rgba(0,0,0,.15));}
-  .logo-title{
-    font-size:clamp(38px,7vw,84px); font-weight:900; letter-spacing:-2px; line-height:1;
-    color:#fff; text-shadow:0 4px 0 #7a35c9, 0 10px 26px rgba(0,0,0,.35);
-  }
-  .logo-title .k{color:var(--gold); text-shadow:0 4px 0 var(--gold-d),0 10px 26px rgba(0,0,0,.35);}
-
-  /* ---------- SETUP ---------- */
-  #setup{height:100%; overflow:auto; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:24px; gap:18px;}
-  .setup-head{text-align:center; display:flex; flex-direction:column; align-items:center; gap:6px; margin-bottom:4px;}
-  .setup-head .sub{color:#e6d8ff; font-weight:700; font-size:clamp(13px,2.2vw,17px);}
-  .card{background:var(--panel); border-radius:26px; box-shadow:var(--shadow); width:min(920px,96vw); padding:clamp(16px,2.4vw,30px);}
-  .row{display:flex; flex-wrap:wrap; gap:14px 22px;}
-  .field{flex:1 1 260px; min-width:220px;}
-  .field > .lab{font-weight:900; font-size:15px; color:#5b4b86; margin:0 0 9px 2px; display:flex; align-items:center; gap:7px;}
-  .chips{display:flex; flex-wrap:wrap; gap:9px;}
-  .chip{
-    border:2.5px solid var(--line); background:#faf8ff; color:#4b3d76; font-weight:800;
-    padding:11px 16px; border-radius:14px; font-size:16px; transition:.12s; min-width:56px; text-align:center;
-  }
-  .chip:hover{border-color:#c9b8f0;}
-  .chip.on{background:var(--ink); color:#fff; border-color:var(--ink); box-shadow:var(--shadow-sm);}
-  .chip.g.on{background:var(--gold); color:#3a2a00; border-color:var(--gold-d);}
-  .hearts-inline{display:flex; align-items:center; gap:10px; margin-top:10px;}
-  .hearts-inline .lab2{font-weight:800; color:#8a79b6; font-size:14px;}
-  
-  .start-btn{
-    margin-top:6px; width:min(920px,96vw); border-radius:22px; padding:20px; font-size:clamp(22px,3.5vw,30px); font-weight:900;
-    color:#fff; background:rgba(255,255,255,0.12); border:2.5px solid rgba(255,255,255,0.20);
-    box-shadow:0 10px 0 rgba(255,255,255,0.15), 0 20px 30px rgba(0,0,0,.25);
-    backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px);
-    transition:transform .06s, box-shadow .06s, background-color .15s, border-color .15s;
-    text-align:center; text-decoration:none; display:inline-flex; align-items:center; justify-content:center; box-sizing:border-box;
-  }
-  .start-btn:hover{background:rgba(255,255,255,0.20); border-color:rgba(255,255,255,0.30);}
-  .start-btn:active{transform:translateY(6px); box-shadow:0 4px 0 rgba(255,255,255,0.15), 0 12px 20px rgba(0,0,0,.25);}
-  
-  /* 다른 게임 고르기 링크 버튼 스타일 */
-  .sub-link-btn {
-    margin-top: 8px;
-    padding: 10px 22px;
-    font-size: 14px;
-    font-weight: 800;
-    color: #c4b6f0;
-    background: rgba(255, 255, 255, 0.08);
-    border: 1.5px solid rgba(255, 255, 255, 0.12);
-    border-radius: 12px;
-    text-decoration: none;
-    transition: background 0.12s, color 0.12s;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
-  }
-  .sub-link-btn:hover {
-    background: rgba(255, 255, 255, 0.15);
-    color: #fff;
-    border-color: rgba(255,255,255,0.25);
-  }
-  
-  .hint{color:#9a8bc4; font-size:13px; margin-top:8px; font-weight:600;}
-
-  /* ---------- GAME ---------- */
-  #game{height:100%; position:relative; display:flex; flex-direction:column; padding:8px 12px; gap:6px; overflow:hidden;}
-  
-  .topbar{display:flex; align-items:center; gap:10px; width:100%; flex:0 0 auto;}
-  .alt{font-size:12px;color:#a06;font-weight:800;}
-  
-  /* 체인바의 세로 크기를 처음부터 3배(height: 220px)로 고정하여 단어 누적 및 스크롤 연동 */
-  .chainbar{
-    height: 220px;
-    flex: 1;
-    min-width: 0;
-    background: rgba(255,255,255,.10);
-    border: 2px solid rgba(255,255,255,.14);
-    border-radius: 18px;
-    padding: 10px 14px;
-    overflow-y: auto;
-  }
-  .chainbar::-webkit-scrollbar {width:6px; height:6px;}
-  .chainbar::-webkit-scrollbar-thumb {background:rgba(255,255,255,0.25); border-radius:3px;}
-  .chain{display:flex; flex-wrap:wrap; align-items:center; gap:6px 10px;}
-  .wtile{background:#fff; border-radius:12px; padding:5px 12px; font-size:clamp(16px,2.2vw,24px); font-weight:900; color:var(--ink); box-shadow:var(--shadow-sm); white-space:nowrap; position:relative; border-bottom:3px solid #e7e0f5; flex:none;}
-  .wtile.seed{border-bottom-color:var(--gold-d); background:#fff7dd;}
-  .wtile .who{position:absolute; top:-8px; left:6px; font-size:9px; font-weight:900; color:#fff; padding:1px 5px; border-radius:6px;}
-  .wtile.pop{animation:pop .3s cubic-bezier(.2,1.3,.4,1);}
-  @keyframes pop{0%{transform:scale(.6);opacity:0;}100%{transform:scale(1);opacity:1;}}
-  .arrow{color:#d8c8ff;font-size:16px;font-weight:900;flex:none;}
-  
-  /* 우상단 이모지 버튼 수직 정렬 컨테이너 */
-  .topbar-actions {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    align-items: center;
-    flex: 0 0 auto;
-  }
-  .top-action-btn {
-    width: 38px;
-    height: 38px;
-    background: rgba(255, 255, 255, 0.12);
-    border: 1.5px solid rgba(255, 255, 255, 0.2);
-    border-radius: 12px;
-    font-size: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: background 0.15s, transform 0.05s;
-    color: #fff;
-    user-select: none;
-  }
-  .top-action-btn:hover {
-    background: rgba(255, 255, 255, 0.22);
-  }
-  .top-action-btn:active {
-    transform: scale(0.92);
-  }
-
-  /* ---------- CENTER SCREEN (중앙 상시 전광판) ---------- */
-  #centerScreen {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    background: rgba(255, 255, 255, 0.08);
-    border: 2px solid rgba(255, 255, 255, 0.12);
-    border-radius: 20px;
-    padding: 8px 12px;
-    box-shadow: inset 0 0 16px rgba(0,0,0,0.25);
-    min-height: 50px;
-  }
-  .screen-label {
-    font-size: 11px;
-    font-weight: 800;
-    color: #c4b6f0;
-    letter-spacing: 1.5px;
-    margin-bottom: 2px;
-  }
-  .screen-word {
-    font-size: clamp(78px, 15vw, 162px);
-    font-weight: 900;
-    color: #fff;
-    text-shadow: 0 0 40px var(--pcol, var(--gold)), 0 4px 12px rgba(0,0,0,0.5);
-    text-align: center;
-    line-height: 1.1;
-  }
-  /* 스크린 단어 팝업 애니메이션 */
-  .screen-word.pop {
-    animation: screenPop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-  }
-  @keyframes screenPop {
-    0% { transform: scale(0.75); opacity: 0.6; }
-    100% { transform: scale(1); opacity: 1; }
-  }
-
-  /* 신규 타이머 바 (전광판 아래 배치, 오른쪽에서 왼쪽으로 잠식하며 소멸) */
-  #timerBarWrap {
-    width: 100%;
-    height: 12px;
-    background: rgba(255, 255, 255, 0.12);
-    border-radius: 6px;
-    overflow: hidden;
-    margin: 4px 0 6px 0;
-    border: 1.5px solid rgba(255, 255, 255, 0.16);
-    box-shadow: inset 0 1px 3px rgba(0,0,0,0.2);
-    flex: 0 0 auto;
-  }
-  #timerBarFill {
-    height: 100%;
-    width: 100%;
-    background: linear-gradient(90deg, #37c26b, #7ee0a0);
-    transition: width 0.1s linear;
-    border-radius: 6px;
-  }
-  #timerBarWrap.warn #timerBarFill {
-    background: linear-gradient(90deg, #e23b5a, #ff8aa0);
-  }
-
-  /* player grid: Flexbox 분산 정렬 및 하단 이동 */
-  .pgrid{display:flex; justify-content:space-between; height:80px; flex:0 0 80px; width:100%;}
-  .pcell{background:rgba(255,255,255,.10); border:3px solid rgba(255,255,255,.16); border-radius:18px; padding:6px 8px; display:flex; flex-direction:column; gap:4px; height:100%; width:calc((100% - 5 * var(--gap)) / 6); flex:none; min-width:0; transition:transform .15s, box-shadow .15s, background .15s;}
-  .pcell.empty{background:rgba(255,255,255,.045); border-style:dashed;}
-  .pcell.empty .emptyTag{margin:auto; color:rgba(255,255,255,.4); font-weight:900; font-size:16px;}
-  .pcell.out{opacity:.5; filter:grayscale(.5);}
-  .pcell.active{background:#fff; border-color:var(--pcol); box-shadow:0 14px 30px rgba(0,0,0,0.25); transform:translateY(-2px);}
-  .pcell-head{display:flex; align-items:center; gap:6px;}
-  .pbadge{width:22px;height:22px;border-radius:7px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:13px;flex:none;box-shadow:0 2px 0 rgba(0,0,0,.15);}
-  .pcell-name{font-weight:900;font-size:clamp(13px,1.5vw,18px);color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-  .pcell.active .pcell-name{color:var(--ink);}
-  .pcell-status{margin-left:auto;font-size:12px;letter-spacing:0.5px;white-space:nowrap;}
-  .outtag{font-size:11px;font-weight:900;color:#ff9db0;letter-spacing:0.5px;}
-  .pcell.active .outtag{color:#c33;}
-  
-  .pcell-body{flex:1; min-height:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px; text-align:center;}
-  
-  .cellLast{font-size:clamp(14px,1.8vw,18px);font-weight:900;color:#fff; word-break:break-all;}
-  .cellLast.muted{color:rgba(255,255,255,.45);font-size:13px;font-weight:700;}
-  .pcell.active .cellLast{color:var(--ink);}
-  .cellLast.typing-status {color:var(--pcol); font-size:13px; font-weight:900; animation:pulse 1s infinite alternate;}
-  @keyframes pulse { from { opacity: 0.5; } to { opacity: 1; } }
-
-  /* 하단 입력 액션 구역: 높이를 280px로 확대하여 키패드가 완전히 담기게 고정 */
-  .game-bottom {
-    height: 280px;
-    flex: 0 0 280px;
-    display: flex;
-    justify-content: space-between;
-    min-height: 0;
-    width: 100%;
-  }
-  .pcell-bottom-action {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 6px;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.15s;
-    width: calc((100% - 5 * var(--gap)) / 6);
-    flex: none;
-    min-width: 0;
-    height: 100%;
-  }
-  .pcell-bottom-action.active {
-    opacity: 1;
-    pointer-events: auto;
-  }
-  
-  .turnTag{font-weight:900; color:var(--pcol); font-size:12px; letter-spacing:0.5px; margin-top:2px;}
-  
-  /* 제시 글자 박스 */
-  .req-char-box {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    background: rgba(255,255,255,0.14);
-    padding: 4px 10px;
-    border-radius: 10px;
-    border: 1px solid rgba(255,255,255,0.18);
-    margin-bottom: 2px;
-  }
-  .req-syl-inline {
-    font-size: 24px;
-    font-weight: 900;
-    color: var(--gold);
-    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
-  }
-  .req-alt-inline {
-    font-size: 11px;
-    color: #e6d8ff;
-    font-weight: 800;
-  }
-
-  /* 입력 프리뷰 */
-  .cellPreview{font-size:clamp(16px,2vw,24px); font-weight:900; color:#fff; letter-spacing:1px; display:flex; align-items:center; justify-content:center; min-height:1.4em; line-height:1; width:100%; word-break:break-all;}
-  .cellPreview .ph{color:#c3b4e8; font-size:.56em; letter-spacing:0; font-weight:800; line-height:1.2;}
-  
-  /* 문자 높이 매칭으로 흔들림 없는 완벽한 직선(수평선) 정렬 적용 */
-  .completed-text {
-    display: inline-block;
-    padding-bottom: 2px;
-    border-bottom: 3.5px solid transparent; /* 투명 테두리로 높이 스펙 1:1 동기화 */
-    vertical-align: bottom;
-  }
-  .active-char {
-    display: inline-block;
-    padding-bottom: 2px;
-    border-bottom: 3.5px solid var(--pcol); /* 플레이어 색상의 굵은 밑줄 */
-    vertical-align: bottom;
-    animation: borderBlink 1.1s step-end infinite;
-    min-width: 1ch;
-    text-align: center;
-  }
-  @keyframes borderBlink {
-    50% { border-bottom-color: transparent; }
-  }
-  
-  .cellFeedback{min-height:16px;font-weight:900;font-size:11px;}
-  .cellFeedback.err{color:#ff6b8b;} .cellFeedback.ok{color:#5eff9f;} .cellFeedback.checking{color:#d8c3ff;}
-
-  /* keypad inline */
-  .keypad-inline{width:100%; display:flex; flex-direction:column; gap:3px; margin-top:auto;}
-  .keypad-inline .krow{display:flex; gap:3px; justify-content:center; width:100%;}
-  .keypad-inline .key{flex:1 1 0; min-width:0; height:28px; border-radius:6px; background:#f4f0fc; border:1.5px solid #e5ddf7; font-size:12px; font-weight:800; color:var(--ink); box-shadow:0 2px 0 #ddd2f2; transition:transform .05s, box-shadow .05s; display:flex; align-items:center; justify-content:center;}
-  .keypad-inline .key:active{transform:translateY(2px); box-shadow:0 0 0 #ddd2f2;}
-  .keypad-inline .key.util{background:#efe9fb;color:#6a58a0;font-size:10px;flex:1.2 1 0;}
-  .keypad-inline .key.shift.on{background:var(--pcol);color:#fff;border-color:transparent;}
-  .keypad-inline .key.del{background:#ffeef0;color:#d43b57;font-size:10px;flex:1.2 1 0;}
-  .keypad-inline .key.enter{background:linear-gradient(180deg,#ffe071,var(--gold));color:#3a2a00;box-shadow:0 2px 0 var(--gold-d);flex:2 1 0;font-size:11px;height:30px;margin-top:2px;}
-  
-  .btn-pass-inline{background:rgba(255,255,255,0.12); color:#e6d8ff; border-radius:8px; padding:4px 8px; font-weight:800; font-size:11px; width:100%; text-align:center; border:1px solid rgba(255,255,255,0.15); transition:background .12s, color .12s; cursor:pointer;}
-  .btn-pass-inline:hover{background:#ffeef0; color:#e23b5a; border-color:#ffdce2;}
-
-  /* toast */
-  .toast{position:absolute; left:50%; top:92px; transform:translateX(-50%); background:rgba(30,16,64,.92); color:#fff; font-weight:900; font-size:18px; padding:12px 22px; border-radius:16px; box-shadow:var(--shadow); z-index:40; animation:toastIn .2s ease;}
-  @keyframes toastIn{from{opacity:0; transform:translate(-50%,-8px);}to{opacity:1;transform:translate(-50%,0);}}
-
-  /* result */
-  #result{height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:20px; padding:24px; text-align:center;}
-  .trophy{font-size:clamp(80px,18vw,150px); animation:bounce 1.1s ease-in-out infinite;}
-  @keyframes bounce{0%,100%{transform:translateY(0) rotate(-4deg);}50%{transform:translateY(-16px) rotate(4deg);}}
-  .win-name{font-size:clamp(34px,7vw,72px); font-weight:900; color:#fff; text-shadow:0 4px 0 rgba(0,0,0,.25);}
-  .win-sub{color:#e6d8ff; font-weight:800; font-size:clamp(15px,2.6vw,20px);}
-  .result-stats{background:rgba(255,255,255,.12); border-radius:18px; padding:14px 22px; color:#fff; font-weight:800; display:flex; gap:26px; flex-wrap:wrap; justify-content:center;}
-  .result-stats span b{color:var(--gold); font-size:1.3em;}
-  .again{display:flex; align-items:center; gap:14px; flex-wrap:wrap; justify-content:center;}
-  .again .primary{border-radius:18px; padding:16px 30px; font-weight:900; font-size:20px; background:linear-gradient(180deg,#ffe071,var(--gold)); color:#3a2a00; box-shadow:0 8px 0 var(--gold-d);}
-  .again .ghost{background:rgba(255,255,255,.12); color:#e6d8ff; border-radius:10px; padding:8px 14px; font-weight:800; font-size:13px; border:1px solid rgba(255,255,255,0.15);}
-
-  .emoji-fall{position:fixed; top:-40px; font-size:30px; z-index:50; pointer-events:none; animation:fall linear forwards;}
-  @keyframes fall{to{transform:translateY(110vh) rotate(360deg);}}
-
-  @media (max-width:760px){
+<head>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-5YW0T2C109"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'G-5YW0T2C109');
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>끝말잇킹</title>
+  <style>
     :root {
-      --gap: 6px;
+      --bg1: #2b1055;
+      --bg2: #3f1f6e;
+      --panel: #ffffff;
+      --ink: #1e1440;
+      --gold: #ffcf3f;
+      --gold-d: #e9a904;
+      --line: #e7e0f5;
+      --p1: #ff5d73;
+      --p2: #4d8bff;
+      --p3: #37c26b;
+      --p4: #ff9f2e;
+      --p5: #a361ff;
+      --p6: #18c5c9;
+      --shadow: 0 18px 40px rgba(20, 6, 55, .35);
+      --shadow-sm: 0 8px 18px rgba(20, 6, 55, .18);
+      --gap: 12px;
     }
-  }
-</style>
+
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html,
+    body {
+      height: 100%;
+      margin: 0;
+    }
+
+    body {
+      font-family: 'Apple SD Gothic Neo', 'Malgun Gothic', 'Noto Sans KR', 'Nanum Gothic', sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(1200px 700px at 15% -10%, #5a2ea0 0%, transparent 55%),
+        radial-gradient(1000px 600px at 100% 0%, #7a2f8f 0%, transparent 50%),
+        linear-gradient(160deg, var(--bg1), var(--bg2));
+      overflow: hidden;
+      touch-action: manipulation;
+    }
+
+    /* .app 높이를 100%로 설정하여 가용 뷰포트에 완전히 맞추고 스크롤 차단 */
+    .app {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    button {
+      font-family: inherit;
+      cursor: pointer;
+      border: none;
+      background: none;
+      color: inherit;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    /* ---------- Brand ---------- */
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: .4rem;
+      font-weight: 900;
+    }
+
+    .brand .crown {
+      font-size: 1.05em;
+      filter: drop-shadow(0 2px 0 rgba(0, 0, 0, .15));
+    }
+
+    .logo-title {
+      font-size: clamp(38px, 7vw, 84px);
+      font-weight: 900;
+      letter-spacing: -2px;
+      line-height: 1;
+      color: #fff;
+      text-shadow: 0 4px 0 #7a35c9, 0 10px 26px rgba(0, 0, 0, .35);
+    }
+
+    .logo-title .k {
+      color: var(--gold);
+      text-shadow: 0 4px 0 var(--gold-d), 0 10px 26px rgba(0, 0, 0, .35);
+    }
+
+    /* ---------- SETUP ---------- */
+    #setup {
+      height: 100%;
+      overflow: auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      gap: 18px;
+    }
+
+    .setup-head {
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 4px;
+    }
+
+    .setup-head .sub {
+      color: #e6d8ff;
+      font-weight: 700;
+      font-size: clamp(13px, 2.2vw, 17px);
+    }
+
+    .card {
+      background: var(--panel);
+      border-radius: 26px;
+      box-shadow: var(--shadow);
+      width: min(920px, 96vw);
+      padding: clamp(16px, 2.4vw, 30px);
+    }
+
+    .row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px 22px;
+    }
+
+    .field {
+      flex: 1 1 260px;
+      min-width: 220px;
+    }
+
+    .field>.lab {
+      font-weight: 900;
+      font-size: 15px;
+      color: #5b4b86;
+      margin: 0 0 9px 2px;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 9px;
+    }
+
+    .chip {
+      border: 2.5px solid var(--line);
+      background: #faf8ff;
+      color: #4b3d76;
+      font-weight: 800;
+      padding: 11px 16px;
+      border-radius: 14px;
+      font-size: 16px;
+      transition: .12s;
+      min-width: 56px;
+      text-align: center;
+    }
+
+    .chip:hover {
+      border-color: #c9b8f0;
+    }
+
+    .chip.on {
+      background: var(--ink);
+      color: #fff;
+      border-color: var(--ink);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .chip.g.on {
+      background: var(--gold);
+      color: #3a2a00;
+      border-color: var(--gold-d);
+    }
+
+    .hearts-inline {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .hearts-inline .lab2 {
+      font-weight: 800;
+      color: #8a79b6;
+      font-size: 14px;
+    }
+
+    .start-btn {
+      margin-top: 6px;
+      width: min(920px, 96vw);
+      border-radius: 22px;
+      padding: 20px;
+      font-size: clamp(22px, 3.5vw, 30px);
+      font-weight: 900;
+      color: #fff;
+      background: rgba(255, 255, 255, 0.12);
+      border: 2.5px solid rgba(255, 255, 255, 0.20);
+      box-shadow: 0 10px 0 rgba(255, 255, 255, 0.15), 0 20px 30px rgba(0, 0, 0, .25);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      transition: transform .06s, box-shadow .06s, background-color .15s, border-color .15s;
+      text-align: center;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      box-sizing: border-box;
+    }
+
+    .start-btn:hover {
+      background: rgba(255, 255, 255, 0.20);
+      border-color: rgba(255, 255, 255, 0.30);
+    }
+
+    .start-btn:active {
+      transform: translateY(6px);
+      box-shadow: 0 4px 0 rgba(255, 255, 255, 0.15), 0 12px 20px rgba(0, 0, 0, .25);
+    }
+
+    /* 다른 게임 고르기 링크 버튼 스타일 */
+    .sub-link-btn {
+      margin-top: 8px;
+      padding: 10px 22px;
+      font-size: 14px;
+      font-weight: 800;
+      color: #c4b6f0;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1.5px solid rgba(255, 255, 255, 0.12);
+      border-radius: 12px;
+      text-decoration: none;
+      transition: background 0.12s, color 0.12s;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    }
+
+    .sub-link-btn:hover {
+      background: rgba(255, 255, 255, 0.15);
+      color: #fff;
+      border-color: rgba(255, 255, 255, 0.25);
+    }
+
+    .hint {
+      color: #9a8bc4;
+      font-size: 13px;
+      margin-top: 8px;
+      font-weight: 600;
+    }
+
+    /* ---------- GAME ---------- */
+    #game {
+      height: 100%;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      padding: 8px 12px;
+      gap: 6px;
+      overflow: hidden;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      width: 100%;
+      flex: 0 0 auto;
+    }
+
+    .alt {
+      font-size: 12px;
+      color: #a06;
+      font-weight: 800;
+    }
+
+    /* 체인바의 세로 크기를 처음부터 3배(height: 220px)로 고정하여 단어 누적 및 스크롤 연동 */
+    .chainbar {
+      height: 220px;
+      flex: 1;
+      min-width: 0;
+      background: rgba(255, 255, 255, .10);
+      border: 2px solid rgba(255, 255, 255, .14);
+      border-radius: 18px;
+      padding: 10px 14px;
+      overflow-y: auto;
+    }
+
+    .chainbar::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+
+    .chainbar::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.25);
+      border-radius: 3px;
+    }
+
+    .chain {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 6px 10px;
+    }
+
+    .wtile {
+      background: #fff;
+      border-radius: 12px;
+      padding: 5px 12px;
+      font-size: clamp(16px, 2.2vw, 24px);
+      font-weight: 900;
+      color: var(--ink);
+      box-shadow: var(--shadow-sm);
+      white-space: nowrap;
+      position: relative;
+      border-bottom: 3px solid #e7e0f5;
+      flex: none;
+    }
+
+    .wtile.seed {
+      border-bottom-color: var(--gold-d);
+      background: #fff7dd;
+    }
+
+    .wtile .who {
+      position: absolute;
+      top: -8px;
+      left: 6px;
+      font-size: 9px;
+      font-weight: 900;
+      color: #fff;
+      padding: 1px 5px;
+      border-radius: 6px;
+    }
+
+    .wtile.pop {
+      animation: pop .3s cubic-bezier(.2, 1.3, .4, 1);
+    }
+
+    @keyframes pop {
+      0% {
+        transform: scale(.6);
+        opacity: 0;
+      }
+
+      100% {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+
+    .arrow {
+      color: #d8c8ff;
+      font-size: 16px;
+      font-weight: 900;
+      flex: none;
+    }
+
+    /* 우상단 이모지 버튼 수직 정렬 컨테이너 */
+    .topbar-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      align-items: center;
+      flex: 0 0 auto;
+    }
+
+    .top-action-btn {
+      width: 38px;
+      height: 38px;
+      background: rgba(255, 255, 255, 0.12);
+      border: 1.5px solid rgba(255, 255, 255, 0.2);
+      border-radius: 12px;
+      font-size: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.15s, transform 0.05s;
+      color: #fff;
+      user-select: none;
+    }
+
+    .top-action-btn:hover {
+      background: rgba(255, 255, 255, 0.22);
+    }
+
+    .top-action-btn:active {
+      transform: scale(0.92);
+    }
+
+    /* ---------- CENTER SCREEN (중앙 상시 전광판) ---------- */
+    #centerScreen {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255, 255, 255, 0.08);
+      border: 2px solid rgba(255, 255, 255, 0.12);
+      border-radius: 20px;
+      padding: 8px 12px;
+      box-shadow: inset 0 0 16px rgba(0, 0, 0, 0.25);
+      min-height: 50px;
+    }
+
+    .screen-label {
+      font-size: 11px;
+      font-weight: 800;
+      color: #c4b6f0;
+      letter-spacing: 1.5px;
+      margin-bottom: 2px;
+    }
+
+    .screen-word {
+      font-size: clamp(78px, 15vw, 162px);
+      font-weight: 900;
+      color: #fff;
+      text-shadow: 0 0 40px var(--pcol, var(--gold)), 0 4px 12px rgba(0, 0, 0, 0.5);
+      text-align: center;
+      line-height: 1.1;
+    }
+
+    /* 스크린 단어 팝업 애니메이션 */
+    .screen-word.pop {
+      animation: screenPop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    }
+
+    @keyframes screenPop {
+      0% {
+        transform: scale(0.75);
+        opacity: 0.6;
+      }
+
+      100% {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+
+    /* 신규 타이머 바 (전광판 아래 배치, 오른쪽에서 왼쪽으로 잠식하며 소멸) */
+    #timerBarWrap {
+      width: 100%;
+      height: 12px;
+      background: rgba(255, 255, 255, 0.12);
+      border-radius: 6px;
+      overflow: hidden;
+      margin: 4px 0 6px 0;
+      border: 1.5px solid rgba(255, 255, 255, 0.16);
+      box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.2);
+      flex: 0 0 auto;
+    }
+
+    #timerBarFill {
+      height: 100%;
+      width: 100%;
+      background: linear-gradient(90deg, #37c26b, #7ee0a0);
+      transition: width 0.1s linear;
+      border-radius: 6px;
+    }
+
+    #timerBarWrap.warn #timerBarFill {
+      background: linear-gradient(90deg, #e23b5a, #ff8aa0);
+    }
+
+    /* player grid: Flexbox 분산 정렬 및 하단 이동 */
+    .pgrid {
+      display: flex;
+      justify-content: space-between;
+      height: 80px;
+      flex: 0 0 80px;
+      width: 100%;
+    }
+
+    .pcell {
+      background: rgba(255, 255, 255, .10);
+      border: 3px solid rgba(255, 255, 255, .16);
+      border-radius: 18px;
+      padding: 6px 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      height: 100%;
+      width: calc((100% - 5 * var(--gap)) / 6);
+      flex: none;
+      min-width: 0;
+      transition: transform .15s, box-shadow .15s, background .15s;
+    }
+
+    .pcell.empty {
+      background: rgba(255, 255, 255, .045);
+      border-style: dashed;
+    }
+
+    .pcell.empty .emptyTag {
+      margin: auto;
+      color: rgba(255, 255, 255, .4);
+      font-weight: 900;
+      font-size: 16px;
+    }
+
+    .pcell.out {
+      opacity: .5;
+      filter: grayscale(.5);
+    }
+
+    .pcell.active {
+      background: #fff;
+      border-color: var(--pcol);
+      box-shadow: 0 14px 30px rgba(0, 0, 0, 0.25);
+      transform: translateY(-2px);
+    }
+
+    .pcell-head {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .pbadge {
+      width: 22px;
+      height: 22px;
+      border-radius: 7px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-weight: 900;
+      font-size: 13px;
+      flex: none;
+      box-shadow: 0 2px 0 rgba(0, 0, 0, .15);
+    }
+
+    .pcell-name {
+      font-weight: 900;
+      font-size: clamp(13px, 1.5vw, 18px);
+      color: #fff;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .pcell.active .pcell-name {
+      color: var(--ink);
+    }
+
+    .pcell-status {
+      margin-left: auto;
+      font-size: 12px;
+      letter-spacing: 0.5px;
+      white-space: nowrap;
+    }
+
+    .outtag {
+      font-size: 11px;
+      font-weight: 900;
+      color: #ff9db0;
+      letter-spacing: 0.5px;
+    }
+
+    .pcell.active .outtag {
+      color: #c33;
+    }
+
+    .pcell-body {
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      text-align: center;
+    }
+
+    .cellLast {
+      font-size: clamp(14px, 1.8vw, 18px);
+      font-weight: 900;
+      color: #fff;
+      word-break: break-all;
+    }
+
+    .cellLast.muted {
+      color: rgba(255, 255, 255, .45);
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .pcell.active .cellLast {
+      color: var(--ink);
+    }
+
+    .cellLast.typing-status {
+      color: var(--pcol);
+      font-size: 13px;
+      font-weight: 900;
+      animation: pulse 1s infinite alternate;
+    }
+
+    @keyframes pulse {
+      from {
+        opacity: 0.5;
+      }
+
+      to {
+        opacity: 1;
+      }
+    }
+
+    /* 하단 입력 액션 구역: 높이를 280px로 확대하여 키패드가 완전히 담기게 고정 */
+    .game-bottom {
+      height: 280px;
+      flex: 0 0 280px;
+      display: flex;
+      justify-content: space-between;
+      min-height: 0;
+      width: 100%;
+    }
+
+    .pcell-bottom-action {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.15s;
+      width: calc((100% - 5 * var(--gap)) / 6);
+      flex: none;
+      min-width: 0;
+      height: 100%;
+    }
+
+    .pcell-bottom-action.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .turnTag {
+      font-weight: 900;
+      color: var(--pcol);
+      font-size: 12px;
+      letter-spacing: 0.5px;
+      margin-top: 2px;
+    }
+
+    /* 제시 글자 박스 */
+    .req-char-box {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255, 255, 255, 0.14);
+      padding: 4px 10px;
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      margin-bottom: 2px;
+    }
+
+    .req-syl-inline {
+      font-size: 24px;
+      font-weight: 900;
+      color: var(--gold);
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    .req-alt-inline {
+      font-size: 11px;
+      color: #e6d8ff;
+      font-weight: 800;
+    }
+
+    /* 입력 프리뷰 */
+    .cellPreview {
+      font-size: clamp(16px, 2vw, 24px);
+      font-weight: 900;
+      color: #fff;
+      letter-spacing: 1px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 1.4em;
+      line-height: 1;
+      width: 100%;
+      word-break: break-all;
+    }
+
+    .cellPreview .ph {
+      color: #c3b4e8;
+      font-size: .56em;
+      letter-spacing: 0;
+      font-weight: 800;
+      line-height: 1.2;
+    }
+
+    /* 문자 높이 매칭으로 흔들림 없는 완벽한 직선(수평선) 정렬 적용 */
+    .completed-text {
+      display: inline-block;
+      padding-bottom: 2px;
+      border-bottom: 3.5px solid transparent;
+      /* 투명 테두리로 높이 스펙 1:1 동기화 */
+      vertical-align: bottom;
+    }
+
+    .active-char {
+      display: inline-block;
+      padding-bottom: 2px;
+      border-bottom: 3.5px solid var(--pcol);
+      /* 플레이어 색상의 굵은 밑줄 */
+      vertical-align: bottom;
+      animation: borderBlink 1.1s step-end infinite;
+      min-width: 1ch;
+      text-align: center;
+    }
+
+    @keyframes borderBlink {
+      50% {
+        border-bottom-color: transparent;
+      }
+    }
+
+    .cellFeedback {
+      min-height: 16px;
+      font-weight: 900;
+      font-size: 11px;
+    }
+
+    .cellFeedback.err {
+      color: #ff6b8b;
+    }
+
+    .cellFeedback.ok {
+      color: #5eff9f;
+    }
+
+    .cellFeedback.checking {
+      color: #d8c3ff;
+    }
+
+    /* keypad inline */
+    .keypad-inline {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      margin-top: auto;
+    }
+
+    .keypad-inline .krow {
+      display: flex;
+      gap: 3px;
+      justify-content: center;
+      width: 100%;
+    }
+
+    .keypad-inline .key {
+      flex: 1 1 0;
+      min-width: 0;
+      height: 28px;
+      border-radius: 6px;
+      background: #f4f0fc;
+      border: 1.5px solid #e5ddf7;
+      font-size: 12px;
+      font-weight: 800;
+      color: var(--ink);
+      box-shadow: 0 2px 0 #ddd2f2;
+      transition: transform .05s, box-shadow .05s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .keypad-inline .key:active {
+      transform: translateY(2px);
+      box-shadow: 0 0 0 #ddd2f2;
+    }
+
+    .keypad-inline .key.util {
+      background: #efe9fb;
+      color: #6a58a0;
+      font-size: 10px;
+      flex: 1.2 1 0;
+    }
+
+    .keypad-inline .key.shift.on {
+      background: var(--pcol);
+      color: #fff;
+      border-color: transparent;
+    }
+
+    .keypad-inline .key.del {
+      background: #ffeef0;
+      color: #d43b57;
+      font-size: 10px;
+      flex: 1.2 1 0;
+    }
+
+    .keypad-inline .key.enter {
+      background: linear-gradient(180deg, #ffe071, var(--gold));
+      color: #3a2a00;
+      box-shadow: 0 2px 0 var(--gold-d);
+      flex: 2 1 0;
+      font-size: 11px;
+      height: 30px;
+      margin-top: 2px;
+    }
+
+    .btn-pass-inline {
+      background: rgba(255, 255, 255, 0.12);
+      color: #e6d8ff;
+      border-radius: 8px;
+      padding: 4px 8px;
+      font-weight: 800;
+      font-size: 11px;
+      width: 100%;
+      text-align: center;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      transition: background .12s, color .12s;
+      cursor: pointer;
+    }
+
+    .btn-pass-inline:hover {
+      background: #ffeef0;
+      color: #e23b5a;
+      border-color: #ffdce2;
+    }
+
+    /* toast */
+    .toast {
+      position: absolute;
+      left: 50%;
+      top: 92px;
+      transform: translateX(-50%);
+      background: rgba(30, 16, 64, .92);
+      color: #fff;
+      font-weight: 900;
+      font-size: 18px;
+      padding: 12px 22px;
+      border-radius: 16px;
+      box-shadow: var(--shadow);
+      z-index: 40;
+      animation: toastIn .2s ease;
+    }
+
+    @keyframes toastIn {
+      from {
+        opacity: 0;
+        transform: translate(-50%, -8px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translate(-50%, 0);
+      }
+    }
+
+    /* result */
+    #result {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      padding: 24px;
+      text-align: center;
+    }
+
+    .trophy {
+      font-size: clamp(80px, 18vw, 150px);
+      animation: bounce 1.1s ease-in-out infinite;
+    }
+
+    @keyframes bounce {
+
+      0%,
+      100% {
+        transform: translateY(0) rotate(-4deg);
+      }
+
+      50% {
+        transform: translateY(-16px) rotate(4deg);
+      }
+    }
+
+    .win-name {
+      font-size: clamp(34px, 7vw, 72px);
+      font-weight: 900;
+      color: #fff;
+      text-shadow: 0 4px 0 rgba(0, 0, 0, .25);
+    }
+
+    .win-sub {
+      color: #e6d8ff;
+      font-weight: 800;
+      font-size: clamp(15px, 2.6vw, 20px);
+    }
+
+    .result-stats {
+      background: rgba(255, 255, 255, .12);
+      border-radius: 18px;
+      padding: 14px 22px;
+      color: #fff;
+      font-weight: 800;
+      display: flex;
+      gap: 26px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .result-stats span b {
+      color: var(--gold);
+      font-size: 1.3em;
+    }
+
+    .again {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .again .primary {
+      border-radius: 18px;
+      padding: 16px 30px;
+      font-weight: 900;
+      font-size: 20px;
+      background: linear-gradient(180deg, #ffe071, var(--gold));
+      color: #3a2a00;
+      box-shadow: 0 8px 0 var(--gold-d);
+    }
+
+    .again .ghost {
+      background: rgba(255, 255, 255, .12);
+      color: #e6d8ff;
+      border-radius: 10px;
+      padding: 8px 14px;
+      font-weight: 800;
+      font-size: 13px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+    }
+
+    .emoji-fall {
+      position: fixed;
+      top: -40px;
+      font-size: 30px;
+      z-index: 50;
+      pointer-events: none;
+      animation: fall linear forwards;
+    }
+
+    @keyframes fall {
+      to {
+        transform: translateY(110vh) rotate(360deg);
+      }
+    }
+
+    @media (max-width:760px) {
+      :root {
+        --gap: 6px;
+      }
+    }
+  </style>
 </head>
+
 <body>
-<div class="app">
+  <div class="app">
 
-  <!-- ===================== SETUP ===================== -->
-  <section id="setup">
-    <div class="setup-head">
-      <div class="logo-title">끝말잇<span class="k">킹</span> 👑</div>
-      <div class="sub">전자칠판 끝말잇기 · 우리말샘 사전 판정 · 명사 · 5글자 이내</div>
-    </div>
-
-    <div class="card">
-      <div class="row">
-        <div class="field">
-          <div class="lab">👥 인원</div>
-          <div class="chips" id="playerCount"></div>
-        </div>
-        <div class="field">
-          <div class="lab">⏱ 제한시간</div>
-          <div class="chips" id="timeOpt">
-            <button class="chip" data-t="10">10초</button>
-            <button class="chip on" data-t="20">20초</button>
-            <button class="chip" data-t="30">30초</button>
-            <button class="chip" data-t="0">무제한</button>
-          </div>
-        </div>
+    <!-- ===================== SETUP ===================== -->
+    <section id="setup">
+      <div class="setup-head">
+        <div class="logo-title">끝말잇<span class="k">킹</span> 👑</div>
+        <div class="sub">전자칠판 끝말잇기 · 우리말샘 사전 판정 · 명사 · 5글자 이내</div>
       </div>
 
-      <div class="row" style="margin-top:18px;">
-        <div class="field">
-          <div class="lab">💔 탈락 방식</div>
-          <div class="chips" id="elimMode">
-            <button class="chip on" data-e="out">즉시 아웃</button>
-            <button class="chip" data-e="heart">하트 감소</button>
+      <div class="card">
+        <div class="row">
+          <div class="field">
+            <div class="lab">👥 인원</div>
+            <div class="chips" id="playerCount"></div>
           </div>
-          <div class="hearts-inline hidden" id="heartRow">
-            <span class="lab2">하트 개수</span>
-            <div class="chips" id="heartCount">
-              <button class="chip g" data-h="2">2</button>
-              <button class="chip g on" data-h="3">3</button>
-              <button class="chip g" data-h="5">5</button>
+          <div class="field">
+            <div class="lab">⏱ 제한시간</div>
+            <div class="chips" id="timeOpt">
+              <button class="chip" data-t="10">10초</button>
+              <button class="chip on" data-t="20">20초</button>
+              <button class="chip" data-t="30">30초</button>
+              <button class="chip" data-t="0">무제한</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="row" style="margin-top:18px;">
+          <div class="field">
+            <div class="lab">💔 탈락 방식</div>
+            <div class="chips" id="elimMode">
+              <button class="chip on" data-e="out">즉시 아웃</button>
+              <button class="chip" data-e="heart">하트 감소</button>
+            </div>
+            <div class="hearts-inline hidden" id="heartRow">
+              <span class="lab2">하트 개수</span>
+              <div class="chips" id="heartCount">
+                <button class="chip g" data-h="2">2</button>
+                <button class="chip g on" data-h="3">3</button>
+                <button class="chip g" data-h="5">5</button>
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
 
-    <button class="start-btn" id="startBtn">게임 시작 🎮</button>
-    <a href="http://킹수학.com" class="sub-link-btn" id="otherGameBtn">다른 게임 고르기</a>
-    <div class="hint">랜덤으로 시작 플레이어와 제시어를 뽑아 드려요.</div>
-  </section>
+      <button class="start-btn" id="startBtn">게임 시작 🎮</button>
+      <a href="http://킹수학.com" class="sub-link-btn" id="otherGameBtn">다른 게임 고르기</a>
+      <div class="hint">랜덤으로 시작 플레이어와 제시어를 뽑아 드려요.</div>
+    </section>
 
-  <!-- ===================== GAME ===================== -->
-  <section id="game" class="hidden">
-    <!-- 상단 툴바 (홈/전체화면 수직 버튼 그룹화) -->
-    <div class="topbar">
-      <div class="chainbar"><div class="chain" id="chain"></div></div>
-      <div class="topbar-actions">
-        <button class="top-action-btn" id="homeBtn" title="홈으로">🏠</button>
-        <button class="top-action-btn" id="fullscreenBtn" title="전체화면">🖥️</button>
+    <!-- ===================== GAME ===================== -->
+    <section id="game" class="hidden">
+      <!-- 상단 툴바 (홈/전체화면 수직 버튼 그룹화) -->
+      <div class="topbar">
+        <div class="chainbar">
+          <div class="chain" id="chain"></div>
+        </div>
+        <div class="topbar-actions">
+          <button class="top-action-btn" id="homeBtn" title="홈으로">🏠</button>
+          <button class="top-action-btn" id="fullscreenBtn" title="전체화면">🖥️</button>
+        </div>
       </div>
-    </div>
 
-    <!-- 중앙 대형 전광판 스크린 -->
-    <div id="centerScreen">
-      <div class="screen-label" id="screenLabel">제시어</div>
-      <div class="screen-word" id="screenWord">사람</div>
-    </div>
+      <!-- 중앙 대형 전광판 스크린 -->
+      <div id="centerScreen">
+        <div class="screen-label" id="screenLabel">제시어</div>
+        <div class="screen-word" id="screenWord">사람</div>
+      </div>
 
-    <!-- 신규 타이머 게이지 바 (오른쪽에서부터 사라지는 형태) -->
-    <div id="timerBarWrap">
-      <div id="timerBarFill"></div>
-    </div>
+      <!-- 신규 타이머 게이지 바 (오른쪽에서부터 사라지는 형태) -->
+      <div id="timerBarWrap">
+        <div id="timerBarFill"></div>
+      </div>
 
-    <!-- 하단 정렬된 플레이어 카드 그리드 -->
-    <div class="pgrid" id="pgrid"></div>
+      <!-- 하단 정렬된 플레이어 카드 그리드 -->
+      <div class="pgrid" id="pgrid"></div>
 
-    <!-- 하단 정렬된 입력/자판 구역 -->
-    <div class="game-bottom" id="gameBottom"></div>
-  </section>
+      <!-- 하단 정렬된 입력/자판 구역 -->
+      <div class="game-bottom" id="gameBottom"></div>
+    </section>
 
-  <!-- ===================== RESULT ===================== -->
-  <section id="result" class="hidden">
-    <div class="trophy">🏆</div>
-    <div>
-      <div class="win-name" id="winName">1P</div>
-      <div class="win-sub">우승! 👑 끝말잇킹의 왕이 되었어요</div>
-    </div>
-    <div class="result-stats" id="resultStats"></div>
-    <div class="again">
-      <button class="primary" id="againSame">같은 설정으로 다시</button>
-      <button class="ghost" id="againNew">설정 바꾸기</button>
-    </div>
-  </section>
+    <!-- ===================== RESULT ===================== -->
+    <section id="result" class="hidden">
+      <div class="trophy">🏆</div>
+      <div>
+        <div class="win-name" id="winName">1P</div>
+        <div class="win-sub">우승! 👑 끝말잇킹의 왕이 되었어요</div>
+      </div>
+      <div class="result-stats" id="resultStats"></div>
+      <div class="again">
+        <button class="primary" id="againSame">같은 설정으로 다시</button>
+        <button class="ghost" id="againNew">설정 바꾸기</button>
+      </div>
+    </section>
 
-</div>
+  </div>
 
-<script src="nouns.js"></script>
-<script>
-"use strict";
+  <script src="nouns.js"></script>
+  <script>
+    "use strict";
 
-/* =========================================================
-   한글 조합 (IME) & 두음법칙 유틸
-========================================================= */
-const CHO=['ㄱ','ㄲ','ㄴ','ㄷ','ㄸ','ㄹ','ㅁ','ㅂ','ㅃ','ㅅ','ㅆ','ㅇ','ㅈ','ㅉ','ㅊ','ㅋ','ㅌ','ㅍ','ㅎ'];
-const JUNG=['ㅏ','ㅐ','ㅑ','ㅒ','ㅓ','ㅔ','ㅕ','ㅖ','ㅗ','ㅘ','ㅙ','ㅚ','ㅛ','ㅜ','ㅝ','ㅞ','ㅟ','ㅠ','ㅡ','ㅢ','ㅣ'];
-const JONG=['','ㄱ','ㄲ','ㄳ','ㄴ','ㄵ','ㄶ','ㄷ','ㄹ','ㄺ','ㄻ','ㄼ','ㄽ','ㄾ','ㄿ','ㅀ','ㅁ','ㅂ','ㅄ','ㅅ','ㅆ','ㅇ','ㅈ','ㅊ','ㅋ','ㅌ','ㅍ','ㅎ'];
+    /* =========================================================
+       한글 조합 (IME) & 두음법칙 유틸
+    ========================================================= */
+    const CHO = ['ㄱ', 'ㄲ', 'ㄴ', 'ㄷ', 'ㄸ', 'ㄹ', 'ㅁ', 'ㅂ', 'ㅃ', 'ㅅ', 'ㅆ', 'ㅇ', 'ㅈ', 'ㅉ', 'ㅊ', 'ㅋ', 'ㅌ', 'ㅍ', 'ㅎ'];
+    const JUNG = ['ㅏ', 'ㅐ', 'ㅑ', 'ㅒ', 'ㅓ', 'ㅔ', 'ㅕ', 'ㅖ', 'ㅗ', 'ㅘ', 'ㅙ', 'ㅚ', 'ㅛ', 'ㅜ', 'ㅝ', 'ㅞ', 'ㅟ', 'ㅠ', 'ㅡ', 'ㅢ', 'ㅣ'];
+    const JONG = ['', 'ㄱ', 'ㄲ', 'ㄳ', 'ㄴ', 'ㄵ', 'ㄶ', 'ㄷ', 'ㄹ', 'ㄺ', 'ㄻ', 'ㄼ', 'ㄽ', 'ㄾ', 'ㄿ', 'ㅀ', 'ㅁ', 'ㅂ', 'ㅄ', 'ㅅ', 'ㅆ', 'ㅇ', 'ㅈ', 'ㅊ', 'ㅋ', 'ㅌ', 'ㅍ', 'ㅎ'];
 
-const VOWEL_COMBINE={'ㅗㅏ':'ㅘ','ㅗㅐ':'ㅙ','ㅗㅣ':'ㅚ','ㅜㅓ':'ㅝ','ㅜㅔ':'ㅞ','ㅜㅣ':'ㅟ','ㅡㅣ':'ㅢ'};
-const VOWEL_BASE={'ㅘ':'ㅗ','ㅙ':'ㅗ','ㅚ':'ㅗ','ㅝ':'ㅜ','ㅞ':'ㅜ','ㅟ':'ㅜ','ㅢ':'ㅡ'};
-const JONG_COMBINE={'ㄱㅅ':'ㄳ','ㄴㅈ':'ㄵ','ㄴㅎ':'ㄶ','ㄹㄱ':'ㄺ','ㄹㅁ':'ㄻ','ㄹㅂ':'ㄼ','ㄹㅅ':'ㄽ','ㄹㅌ':'ㄾ','ㄹㅍ':'ㄿ','ㄹㅎ':'ㅀ','ㅂㅅ':'ㅄ'};
-const JONG_SPLIT={'ㄳ':['ㄱ','ㅅ'],'ㄵ':['ㄴ','ㅈ'],'ㄶ':['ㄴ','ㅎ'],'ㄺ':['ㄹ','ㄱ'],'ㄻ':['ㄹ','ㅁ'],'ㄼ':['ㄹ','ㅂ'],'ㄽ':['ㄹ','ㅅ'],'ㄾ':['ㄹ','ㅌ'],'ㄿ':['ㄹ','ㅍ'],'ㅀ':['ㄹ','ㅎ'],'ㅄ':['ㅂ','ㅅ']};
+    const VOWEL_COMBINE = { 'ㅗㅏ': 'ㅘ', 'ㅗㅐ': 'ㅙ', 'ㅗㅣ': 'ㅚ', 'ㅜㅓ': 'ㅝ', 'ㅜㅔ': 'ㅞ', 'ㅜㅣ': 'ㅟ', 'ㅡㅣ': 'ㅢ' };
+    const VOWEL_BASE = { 'ㅘ': 'ㅗ', 'ㅙ': 'ㅗ', 'ㅚ': 'ㅗ', 'ㅝ': 'ㅜ', 'ㅞ': 'ㅜ', 'ㅟ': 'ㅜ', 'ㅢ': 'ㅡ' };
+    const JONG_COMBINE = { 'ㄱㅅ': 'ㄳ', 'ㄴㅈ': 'ㄵ', 'ㄴㅎ': 'ㄶ', 'ㄹㄱ': 'ㄺ', 'ㄹㅁ': 'ㄻ', 'ㄹㅂ': 'ㄼ', 'ㄹㅅ': 'ㄽ', 'ㄹㅌ': 'ㄾ', 'ㄹㅍ': 'ㄿ', 'ㄹㅎ': 'ㅀ', 'ㅂㅅ': 'ㅄ' };
+    const JONG_SPLIT = { 'ㄳ': ['ㄱ', 'ㅅ'], 'ㄵ': ['ㄴ', 'ㅈ'], 'ㄶ': ['ㄴ', 'ㅎ'], 'ㄺ': ['ㄹ', 'ㄱ'], 'ㄻ': ['ㄹ', 'ㅁ'], 'ㄼ': ['ㄹ', 'ㅂ'], 'ㄽ': ['ㄹ', 'ㅅ'], 'ㄾ': ['ㄹ', 'ㅌ'], 'ㄿ': ['ㄹ', 'ㅍ'], 'ㅀ': ['ㄹ', 'ㅎ'], 'ㅄ': ['ㅂ', 'ㅅ'] };
 
-function decompose(ch){
-  const code=ch.charCodeAt(0)-0xAC00;
-  if(code<0||code>11171) return null;
-  return {cho:Math.floor(code/588), jung:Math.floor((code%588)/28), jong:code%28};
-}
-function composeIdx(cho,jung,jong){ return String.fromCharCode(0xAC00+cho*588+jung*28+jong); }
-
-/* 두음법칙 적용기 (단일 문자 반환) */
-function applyDeum(ch){
-  const d=decompose(ch); if(!d) return ch;
-  const {cho,jung,jong}=d;
-  if(cho===5){ // ㄹ
-    if([2,6,7,12,17,20].includes(jung)) return composeIdx(11,jung,jong); // 려→여, 료→요, 류→유, 리→이, 례→예, 랴→야
-    if(jung===18) return composeIdx(11,jung,jong);                      // 르→으 (늠/음 지원용)
-    return composeIdx(2,jung,jong);                                     // 라→나, 로→노, 루→누 ...
-  } else if(cho===2){ // ㄴ
-    if([6,12,17,20].includes(jung)) return composeIdx(11,jung,jong);     // 녀→여, 뇨→요, 뉴→유, 니→이
-  }
-  return ch;
-}
-
-/* 두음법칙 변이 집합 (역행 방지 포함) */
-/* 두음법칙 변이 집합 (역행 방지 포함) */
-function deumVariants(ch){
-  const d=decompose(ch); if(!d) return [ch];
-  const {cho,jung,jong}=d;
-  const out=new Set();
-  out.add(ch); // 원본 글자는 항상 후보에 포함
-  if(cho===5){ // ㄹ
-    if([2,6,7,12,17,20].includes(jung)){
-      out.add(composeIdx(11,jung,jong)); // 려→여, 료→요, 류→유, 리→이, 례→예, 랴→야
-    } else if(jung===18){
-      out.add(composeIdx(2,jung,jong));  // 느 (늠)
-      out.add(composeIdx(11,jung,jong)); // 으 (음)
-    } else {
-      out.add(composeIdx(2,jung,jong));  // 라→나, 로→노, 루→누 ...
+    function decompose(ch) {
+      const code = ch.charCodeAt(0) - 0xAC00;
+      if (code < 0 || code > 11171) return null;
+      return { cho: Math.floor(code / 588), jung: Math.floor((code % 588) / 28), jong: code % 28 };
     }
-  } else if(cho===2){ // ㄴ
-    if([6,12,17,20].includes(jung)){
-      out.add(composeIdx(11,jung,jong)); // 녀→여, 뇨→요, 뉴→유, 니→이
-    } else if(jung===18){
-      out.add(composeIdx(11,jung,jong)); // 느→으 (늠/음 지원용)
-    }
-  } else if(cho===11 && jung===18){ // ㅇ + ㅡ
-    out.add(composeIdx(2,jung,jong));  // 으→느 (음→늠 지원용)
-  }
-  return [...out];
-}
+    function composeIdx(cho, jung, jong) { return String.fromCharCode(0xAC00 + cho * 588 + jung * 28 + jong); }
 
-class Hangul{
-  constructor(){ this.reset(); }
-  reset(){ this.committed=''; this.cho=-1; this.jung=-1; this.jong=0; }
-  currentChar(){
-    if(this.cho>=0&&this.jung>=0) return composeIdx(this.cho,this.jung,this.jong);
-    if(this.cho>=0) return CHO[this.cho];
-    if(this.jung>=0) return JUNG[this.jung];
-    return '';
-  }
-  get text(){ return this.committed+this.currentChar(); }
-  commit(){ this.committed+=this.currentChar(); this.cho=-1; this.jung=-1; this.jong=0; }
-  input(jamo){
-    const vi=JUNG.indexOf(jamo);
-    if(vi>=0){ // vowel
-      if(this.jong>0){
-        const jc=JONG[this.jong];
-        if(JONG_SPLIT[jc]){
-          const [rem,mv]=JONG_SPLIT[jc];
-          this.jong=JONG.indexOf(rem); this.commit();
-          this.cho=CHO.indexOf(mv); this.jung=vi; this.jong=0;
-        }else{
-          const mv=CHO.indexOf(jc); this.jong=0; this.commit();
-          this.cho=mv; this.jung=vi; this.jong=0;
-        }
-      }else if(this.jung>=0){
-        const key=JUNG[this.jung]+jamo;
-        if(VOWEL_COMBINE[key]) this.jung=JUNG.indexOf(VOWEL_COMBINE[key]);
-        else{ this.commit(); this.cho=-1; this.jung=vi; this.jong=0; }
-      }else{ this.jung=vi; }
-    }else{ // consonant
-      if(this.cho<0&&this.jung<0){ this.cho=CHO.indexOf(jamo); }
-      else if(this.jung<0){ this.commit(); this.cho=CHO.indexOf(jamo); }
-      else if(this.jong===0){
-        const ji=JONG.indexOf(jamo);
-        if(ji>0) this.jong=ji;
-        else{ this.commit(); this.cho=CHO.indexOf(jamo); }
-      }else{
-        const comb=JONG_COMBINE[JONG[this.jong]+jamo];
-        if(comb) this.jong=JONG.indexOf(comb);
-        else{ this.commit(); this.cho=CHO.indexOf(jamo); }
+    /* 두음법칙 적용기 (단일 문자 반환) */
+    function applyDeum(ch) {
+      const d = decompose(ch); if (!d) return ch;
+      const { cho, jung, jong } = d;
+      if (cho === 5) { // ㄹ
+        if ([2, 6, 7, 12, 17, 20].includes(jung)) return composeIdx(11, jung, jong); // 려→여, 료→요, 류→유, 리→이, 례→예, 랴→야
+        if (jung === 18) return composeIdx(11, jung, jong);                      // 르→으 (늠/음 지원용)
+        return composeIdx(2, jung, jong);                                     // 라→나, 로→노, 루→누 ...
+      } else if (cho === 2) { // ㄴ
+        if ([6, 12, 17, 20].includes(jung)) return composeIdx(11, jung, jong);     // 녀→여, 뇨→요, 뉴→유, 니→이
       }
+      return ch;
     }
-  }
-  backspace(){
-    if(this.jong>0){
-      const jc=JONG[this.jong];
-      this.jong=JONG_SPLIT[jc]?JONG.indexOf(JONG_SPLIT[jc][0]):0;
-    }else if(this.jung>=0){
-      const b=VOWEL_BASE[JUNG[this.jung]];
-      this.jung=b?JUNG.indexOf(b):-1;
-    }else if(this.cho>=0){ this.cho=-1; }
-    else if(this.committed.length > 1){ this.committed=this.committed.slice(0,-1); }
-  }
-}
 
-/* =========================================================
-   쉬운 제시어 100개 하드코딩
- ========================================================= */
-const EASY_SEEDS = [
-  '가방', '나무', '사람', '학교', '하늘', '바다', '사과', '수박', '모자', '안경',
-  '자전거', '우산', '시계', '의자', '책상', '공책', '필통', '연필', '가위', '거울',
-  '바지', '치마', '구두', '신발', '양말', '장갑', '이불', '베개', '비누', '치약',
-  '칫솔', '수건', '지갑', '냄비', '소파', '침대', '옷장', '화분', '꽃병', '지우개',
-  '인형', '로봇', '줄넘기', '그네', '시소', '모래', '자갈', '조개', '소라', '고래',
-  '상어', '거북이', '문어', '오징어', '새우', '꽃게', '호랑이', '사자', '토끼', '여우',
-  '원숭이', '코끼리', '기린', '사슴', '강아지', '고양이', '돼지', '오리', '닭장', '나비',
-  '벌레', '거미', '낙타', '양파', '당근', '오이', '감자', '고구마', '고추', '자두',
-  '레몬', '포도', '바나나', '딸기', '수수', '우유', '보석', '구름', '눈물', '눈사람',
-  '선풍기', '전화기', '라디오', '사진', '액자', '단추', '열쇠', '편지', '풍선', '과자'
-];
+    /* 두음법칙 변이 집합 (역행 방지 포함) */
+    /* 두음법칙 변이 집합 (역행 방지 포함) */
+    function deumVariants(ch) {
+      const d = decompose(ch); if (!d) return [ch];
+      const { cho, jung, jong } = d;
+      const out = new Set();
+      out.add(ch); // 원본 글자는 항상 후보에 포함
+      if (cho === 5) { // ㄹ
+        if ([2, 6, 7, 12, 17, 20].includes(jung)) {
+          out.add(composeIdx(11, jung, jong)); // 려→여, 료→요, 류→유, 리→이, 례→예, 랴→야
+        } else if (jung === 18) {
+          out.add(composeIdx(2, jung, jong));  // 느 (늠)
+          out.add(composeIdx(11, jung, jong)); // 으 (음)
+        } else {
+          out.add(composeIdx(2, jung, jong));  // 라→나, 로→노, 루→누 ...
+        }
+      } else if (cho === 2) { // ㄴ
+        if ([6, 12, 17, 20].includes(jung)) {
+          out.add(composeIdx(11, jung, jong)); // 녀→여, 뇨→요, 뉴→유, 니→이
+        } else if (jung === 18) {
+          out.add(composeIdx(11, jung, jong)); // 느→으 (늠/음 지원용)
+        }
+      } else if (cho === 11 && jung === 18) { // ㅇ + ㅡ
+        out.add(composeIdx(2, jung, jong));  // 으→느 (음→늠 지원용)
+      }
+      return [...out];
+    }
 
-let offlineNounsList = [];
-if (typeof OFFLINE_NOUNS !== 'undefined') {
-  offlineNounsList = OFFLINE_NOUNS.split(' ');
-} else {
-  offlineNounsList = EASY_SEEDS;
-}
-const DICT = new Set(offlineNounsList.filter(w=>w && w.length<=5));
-const DICT_ARR = [...DICT];
-// 첫 글자 색인
-const BY_FIRST = {};
-for(const w of DICT_ARR){ (BY_FIRST[w[0]] ||= []).push(w); }
-function continuationsFor(ch){
-  let list=[];
-  for(const v of deumVariants(ch)) if(BY_FIRST[v]) list=list.concat(BY_FIRST[v]);
-  return list;
-}
-
-/* =========================================================
-   상태
-========================================================= */
-const P_COLORS=['#ff5d73','#4d8bff','#37c26b','#ff9f2e','#a361ff','#18c5c9'];
-const cfg = { count:3, time:20, mode:'keypad', elim:'out', hearts:3, names:[] };
-let G = null; // 게임 상태
-
-const $ = s => document.querySelector(s);
-const el = (t,c)=>{const e=document.createElement(t); if(c)e.className=c; return e;};
-
-/* =========================================================
-   사운드 & TTS 발음 재생
-========================================================= */
-let AC=null;
-function ac(){ if(!AC){ try{AC=new (window.AudioContext||window.webkitAudioContext)();}catch(e){} } if(AC&&AC.state==='suspended')AC.resume(); return AC; }
-function beep(freq,dur,type='sine',vol=0.15){
-  const c=ac(); if(!c) return;
-  const o=c.createOscillator(), g=c.createGain();
-  o.type=type; o.frequency.value=freq; o.connect(g); g.connect(c.destination);
-  g.gain.setValueAtTime(vol,c.currentTime);
-  g.gain.exponentialRampToValueAtTime(0.001,c.currentTime+dur);
-  o.start(); o.stop(c.currentTime+dur);
-}
-const sfxKey  = ()=>beep(520,0.05,'square',0.06);
-const sfxOk   = ()=>{beep(660,0.09,'sine',0.16); setTimeout(()=>beep(990,0.14,'sine',0.16),90);};
-const sfxErr  = ()=>{beep(180,0.18,'sawtooth',0.14);};
-const sfxTick = ()=>beep(880,0.05,'sine',0.10);
-const sfxWin  = ()=>{[523,659,784,1046].forEach((f,i)=>setTimeout(()=>beep(f,0.18,'triangle',0.18),i*130));};
-
-/* 브라우저 TTS 한국어 발음 재생 */
-function speak(text){
-  if(!window.speechSynthesis) return;
-  try{
-    window.speechSynthesis.cancel();
-    const u = new SpeechSynthesisUtterance(text);
-    u.lang = 'ko-KR';
-    u.rate = 0.95;
-    u.pitch = 1.0;
-    window.speechSynthesis.speak(u);
-  }catch(e){}
-}
-
-/* 중앙 전광판 스크택스트 동기화 */
-function updateCenterScreen(type, word, color){
-  const label = $('#screenLabel');
-  const wordEl = $('#screenWord');
-  const screen = $('#centerScreen');
-  
-  if (type === 'seed') {
-    label.textContent = '제시어';
-    wordEl.textContent = word + '!';
-    screen.style.setProperty('--pcol', 'var(--gold)');
-  } else {
-    const pName = G ? G.players[G.cur].name : '';
-    label.textContent = pName ? pName + ' 성공!' : '최근 성공 단어';
-    wordEl.textContent = word + '!';
-    screen.style.setProperty('--pcol', color || '#fff');
-  }
-}
-
-/* 중앙 전광판 내 팝업 연출 및 TTS 재생 */
-function showWordOverlay(type, word, color, callback){
-  updateCenterScreen(type, word, color);
-  
-  const wordEl = $('#screenWord');
-  wordEl.classList.remove('pop');
-  void wordEl.offsetWidth; // Reflow 트리거
-  wordEl.classList.add('pop');
-  
-  const ttsText = type === 'seed' ? '제시어 ' + word : word;
-  speak(ttsText);
-  
-  stopTimer(); // 연출 시간 동안 타이머 일시정지
-  setTimeout(() => {
-    if(callback) callback();
-  }, 1500);
-}
-
-/* =========================================================
-   SETUP 화면
-========================================================= */
-function buildSetup(){
-  const pc=$('#playerCount'); pc.innerHTML='';
-  for(let n=2;n<=6;n++){
-    const b=el('button','chip'+(n===cfg.count?' on':'')); b.textContent=n+'인'; b.dataset.n=n;
-    b.onclick=()=>{cfg.count=n; buildSetup();};
-    pc.appendChild(b);
-  }
-}
-$('#timeOpt').onclick=e=>{const b=e.target.closest('.chip'); if(!b)return; cfg.time=+b.dataset.t; sel('#timeOpt',b);};
-$('#elimMode').onclick=e=>{const b=e.target.closest('.chip'); if(!b)return; cfg.elim=b.dataset.e; sel('#elimMode',b);
-  $('#heartRow').classList.toggle('hidden', cfg.elim!=='heart');
-};
-$('#heartCount').onclick=e=>{const b=e.target.closest('.chip'); if(!b)return; cfg.hearts=+b.dataset.h; sel('#heartCount',b);};
-function sel(container,btn){ document.querySelectorAll(container+' .chip').forEach(c=>c.classList.remove('on')); btn.classList.add('on'); }
-$('#startBtn').onclick=()=>{ ac(); startGame(); };
-
-/* =========================================================
-   우리말샘 오픈 API (단어 검증)
-========================================================= */
-const URIMAL_KEY='8F102F8109E1CA5966761BC6E88A5ED8';
-async function urimalFetch(word){
-  const targetUrl='https://opendict.korean.go.kr/api/search?key='+URIMAL_KEY
-    +'&q='+encodeURIComponent(word)+'&req_type=json&advanced=y&method=exact&num=10';
-  const url='https://api.allorigins.win/raw?url='+encodeURIComponent(targetUrl);
-  const ctrl=new AbortController();
-  const to=setTimeout(()=>ctrl.abort(),4000);
-  try{
-    const res=await fetch(url,{signal:ctrl.signal});
-    clearTimeout(to);
-    if(!res.ok) throw new Error('HTTP '+res.status);
-    const data=await res.json();
-    return {ok:true,data};
-  }catch(e){ clearTimeout(to); return {ok:false,error:e}; }
-}
-function urimalAnalyze(data,word){
-  const ch=data&&data.channel;
-  let items=ch&&ch.item ? (Array.isArray(ch.item)?ch.item:[ch.item]) : [];
-  const norm=s=>String(s||'').replace(/[^가-힣]/g,'');
-  const exact=items.filter(it=>norm(it.word)===word);
-  if(!exact.length) return {found:false};
-  let sawPos=false, noun=false, proper=false;
-  for(const it of exact){
-    const poss=[];
-    if(it.pos) poss.push(it.pos);
-    const senses=it.sense?(Array.isArray(it.sense)?it.sense:[it.sense]):[];
-    for(const s of senses){ if(s&&s.pos) poss.push(s.pos); }
-    for(let p of poss){
-      p=String(p);
-      if(p.trim()){
-        sawPos=true;
-        if(p.indexOf('명사')>=0){
-          if(p.indexOf('고유')>=0 || p.indexOf('지명')>=0 || p.indexOf('인명')>=0){
-            proper=true;
+    class Hangul {
+      constructor() { this.reset(); }
+      reset() { this.committed = ''; this.cho = -1; this.jung = -1; this.jong = 0; }
+      currentChar() {
+        if (this.cho >= 0 && this.jung >= 0) return composeIdx(this.cho, this.jung, this.jong);
+        if (this.cho >= 0) return CHO[this.cho];
+        if (this.jung >= 0) return JUNG[this.jung];
+        return '';
+      }
+      get text() { return this.committed + this.currentChar(); }
+      commit() { this.committed += this.currentChar(); this.cho = -1; this.jung = -1; this.jong = 0; }
+      input(jamo) {
+        const vi = JUNG.indexOf(jamo);
+        if (vi >= 0) { // vowel
+          if (this.jong > 0) {
+            const jc = JONG[this.jong];
+            if (JONG_SPLIT[jc]) {
+              const [rem, mv] = JONG_SPLIT[jc];
+              this.jong = JONG.indexOf(rem); this.commit();
+              this.cho = CHO.indexOf(mv); this.jung = vi; this.jong = 0;
+            } else {
+              const mv = CHO.indexOf(jc); this.jong = 0; this.commit();
+              this.cho = mv; this.jung = vi; this.jong = 0;
+            }
+          } else if (this.jung >= 0) {
+            const key = JUNG[this.jung] + jamo;
+            if (VOWEL_COMBINE[key]) this.jung = JUNG.indexOf(VOWEL_COMBINE[key]);
+            else { this.commit(); this.cho = -1; this.jung = vi; this.jong = 0; }
+          } else { this.jung = vi; }
+        } else { // consonant
+          if (this.cho < 0 && this.jung < 0) { this.cho = CHO.indexOf(jamo); }
+          else if (this.jung < 0) { this.commit(); this.cho = CHO.indexOf(jamo); }
+          else if (this.jong === 0) {
+            const ji = JONG.indexOf(jamo);
+            if (ji > 0) this.jong = ji;
+            else { this.commit(); this.cho = CHO.indexOf(jamo); }
           } else {
-            noun=true;
+            const comb = JONG_COMBINE[JONG[this.jong] + jamo];
+            if (comb) this.jong = JONG.indexOf(comb);
+            else { this.commit(); this.cho = CHO.indexOf(jamo); }
           }
         }
       }
-    }
-  }
-  if(noun) return {found:true,noun:true};
-  if(proper) return {found:true,noun:false,proper:true};
-  if(!sawPos) return {found:true,noun:true};
-  return {found:true,noun:false};
-}
-async function checkWord(word){
-  if(DICT.has(word)) return {ok:true, source:'offline'};
-  const r=await urimalFetch(word);
-  if(r.ok){
-    const a=urimalAnalyze(r.data,word);
-    if(a.found&&a.noun)  return {ok:true, source:'online'};
-    if(a.found&&a.proper) return {ok:false, reason:'고유명사(인명, 지명 등)는 사용할 수 없어요', source:'online'};
-    if(a.found&&!a.noun) return {ok:false, reason:'명사가 아니에요 (우리말샘)', source:'online'};
-    return {ok:false, reason:'우리말샘에 없는 단어예요', source:'online'};
-  }
-  return {ok:false, reason:'사전에 없는 단어예요 (오프라인)', source:'offline'};
-}
-
-/* =========================================================
-   게임 시작 / 진행
-========================================================= */
-function startGame(){
-  const players=[];
-  for(let i=0;i<cfg.count;i++){
-    players.push({ id:i, name:(i+1)+'번',
-      color:P_COLORS[i], hearts:cfg.hearts, out:false, lastWord:'' });
-  }
-  const seed = EASY_SEEDS[(Math.random()*EASY_SEEDS.length)|0];
-
-  G={
-    players, time:cfg.time, elim:cfg.elim,
-    cur:(Math.random()*players.length)|0,
-    used:new Set([seed]),
-    chain:[{type:'seed', word:seed}],
-    reqChar: applyDeum(seed[seed.length-1]),
-    turns:0, timer:null, remain:0, composer:new Hangul(),
-    kbShift:false, checking:false, warnedOffline:false, seed
-  };
-  $('#setup').classList.add('hidden');
-  $('#result').classList.add('hidden');
-  $('#game').classList.remove('hidden');
-  renderChain();
-  
-  // 첫 제시어 팝업 연출 후 턴 시작
-  showWordOverlay('seed', seed, null, () => {
-    startTurn();
-  });
-}
-function aliveIdx(){ return G.players.map((p,i)=>p.out?-1:i).filter(i=>i>=0); }
-function nextAlive(from){ const n=G.players.length; for(let k=1;k<=n;k++){ const i=(from+k)%n; if(!G.players[i].out) return i; } return from; }
-
-function startTurn(){
-  G.composer.reset();
-  G.composer.committed = G.reqChar; // 첫 글자 기본 입력 처리
-  G.kbShift=false; G.checking=false;
-  renderGrid();
-  startTimer(true);
-}
-
-/* ---------- 타이머 ---------- */
-function startTimer(reset){
-  stopTimer();
-  const wrap=$('#timerBarWrap');
-  if(G.time===0){ wrap.style.display='none'; return; }
-  wrap.style.display='';
-  if(reset) G.remain=G.time;
-  updateTimerUI();
-  G.timer=setInterval(()=>{
-    G.remain-=0.1;
-    if(G.remain>0 && Math.abs(G.remain-Math.round(G.remain))<0.06 && Math.round(G.remain)<=5) sfxTick();
-    if(G.remain<=0){ G.remain=0; updateTimerUI(); stopTimer(); onFail('시간 초과'); return; }
-    updateTimerUI();
-  },100);
-}
-function stopTimer(){ if(G.timer){clearInterval(G.timer); G.timer=null;} }
-function pauseTimer(){ stopTimer(); }
-function updateTimerUI(){
-  const wrap=$('#timerBarWrap');
-  if(!wrap) return;
-  const percent = (G.remain / G.time) * 100;
-  $('#timerBarFill').style.width = percent + '%';
-  wrap.classList.toggle('warn', G.remain <= 5.05);
-}
-
-/* =========================================================
-   렌더링
-========================================================= */
-function renderChain(){
-  const c=$('#chain'); c.innerHTML='';
-  G.chain.forEach((item,idx)=>{
-    if(idx>0){ const a=el('span','arrow'); a.textContent='→'; c.appendChild(a); }
-    const t=el('div','wtile'+(item.type==='seed'?' seed':'')+' pop'); t.textContent=item.word;
-    if(item.by!=null){ const w=el('span','who'); w.textContent=G.players[item.by].name; w.style.background=G.players[item.by].color; t.appendChild(w); }
-    c.appendChild(t);
-  });
-  // 세로 스크롤로 하단까지 자동 스크롤 연동
-  c.parentElement.scrollTop = c.parentElement.scrollHeight;
-}
-function renderGrid(){
-  const grid=$('#pgrid'); grid.innerHTML='';
-  const bottom=$('#gameBottom'); bottom.innerHTML='';
-  
-  for(let i=0;i<G.players.length;i++){
-    const p=G.players[i];
-    const active=(i===G.cur&&!p.out);
-    
-    // 1. 상단 플레이어 정보 카드
-    const cell=el('div','pcell');
-    if(active) cell.classList.add('active');
-    if(p.out) cell.classList.add('out');
-    cell.style.setProperty('--pcol',p.color);
-    
-    const head=el('div','pcell-head');
-    const badge=el('span','pbadge'); badge.textContent=(i+1); badge.style.background=p.color;
-    const nm=el('span','pcell-name'); nm.textContent=p.name;
-    const st=el('span','pcell-status');
-    if(p.out){ const o=el('span','outtag'); o.textContent='아웃'; st.appendChild(o); }
-    else if(G.elim==='heart'){ const l=el('span','life'); l.textContent='❤️'.repeat(p.hearts); st.appendChild(l); }
-    head.append(badge,nm,st); cell.appendChild(head);
-    
-    const body=el('div','pcell-body');
-    const last=el('div','cellLast');
-    if(active) {
-      last.textContent='입력 중...';
-      last.classList.add('typing-status');
-    } else {
-      if(p.lastWord){ last.textContent=p.lastWord; } else { last.textContent='대기 중'; last.classList.add('muted'); }
-    }
-    body.appendChild(last);
-    cell.appendChild(body);
-    grid.appendChild(cell);
-    
-    // 2. 하단 액션 카드 (활성 사용자 영역 정렬)
-    const bCell = el('div', 'pcell-bottom-action');
-    bCell.style.setProperty('--pcol', p.color);
-    if(active){
-      bCell.classList.add('active');
-      
-      const tag=el('div','turnTag'); tag.textContent='내 차례!';
-      
-      const reqBox = el('div', 'req-char-box');
-      const reqSyl = el('span', 'req-syl-inline'); reqSyl.textContent = G.reqChar;
-      const alts = deumVariants(G.reqChar).filter(c=>c!==G.reqChar);
-      const reqAlt = el('span', 'req-alt-inline'); reqAlt.textContent = alts.length ? ' 또는 ' + alts.join('·') : '';
-      reqBox.append(reqSyl, reqAlt);
-      
-      const pv=el('div','cellPreview'); pv.id='activePreview';
-      const fb=el('div','cellFeedback'); fb.id='activeFeedback';
-      bCell.append(tag, reqBox, pv, fb);
-      
-      const kbdContainer = el('div', 'keypad-inline');
-      renderInlineKeypad(kbdContainer);
-      bCell.appendChild(kbdContainer);
-    }
-    bottom.appendChild(bCell);
-  }
-  updatePreview();
-}
-
-/* ---------- 키패드(플레이어별 인라인) ---------- */
-const KEY_ROWS=[
-  ['ㅂ','ㅈ','ㄷ','ㄱ','ㅅ','ㅛ','ㅕ','ㅑ','ㅐ','ㅔ'],
-  ['ㅁ','ㄴ','ㅇ','ㄹ','ㅎ','ㅗ','ㅓ','ㅏ','ㅣ'],
-  ['SHIFT','ㅋ','ㅌ','ㅊ','ㅍ','ㅠ','ㅜ','ㅡ','DEL']
-];
-const SHIFT_MAP={'ㅂ':'ㅃ','ㅈ':'ㅉ','ㄷ':'ㄸ','ㄱ':'ㄲ','ㅅ':'ㅆ','ㅐ':'ㅒ','ㅔ':'ㅖ'};
-function renderInlineKeypad(container){
-  container.innerHTML='';
-  
-  const pass=el('button','btn-pass-inline'); pass.innerHTML='포기 ✋';
-  pass.onclick=(e)=>{ e.stopPropagation(); if(!G||G.checking) return; stopTimer(); onFail('포기'); };
-  container.appendChild(pass);
-  
-  KEY_ROWS.forEach(row=>{
-    const r=el('div','krow');
-    row.forEach(k=>{
-      let b;
-      if(k==='SHIFT'){
-        b=el('button','key util shift'+(G.kbShift?' on':'')); b.textContent='⇧';
-        b.onclick=(e)=>{ e.stopPropagation(); if(G.checking)return; G.kbShift=!G.kbShift; renderInlineKeypad(container); };
+      backspace() {
+        if (this.jong > 0) {
+          const jc = JONG[this.jong];
+          this.jong = JONG_SPLIT[jc] ? JONG.indexOf(JONG_SPLIT[jc][0]) : 0;
+        } else if (this.jung >= 0) {
+          const b = VOWEL_BASE[JUNG[this.jung]];
+          this.jung = b ? JUNG.indexOf(b) : -1;
+        } else if (this.cho >= 0) { this.cho = -1; }
+        else if (this.committed.length > 1) { this.committed = this.committed.slice(0, -1); }
       }
-      else if(k==='DEL'){
-        b=el('button','key del'); b.textContent='⌫';
-        b.onclick=(e)=>{ e.stopPropagation(); if(G.checking)return; G.composer.backspace(); updatePreview(); sfxKey(); };
-      }
-      else{
-        const out=(G.kbShift&&SHIFT_MAP[k])?SHIFT_MAP[k]:k;
-        b=el('button','key'); b.textContent=out;
-        b.onclick=(e)=>{
-          e.stopPropagation();
-          if(G.checking)return;
-          G.composer.input(out);
-          if(G.kbShift){G.kbShift=false; renderInlineKeypad(container);}
-          updatePreview();
-          sfxKey();
-        };
-      }
-      r.appendChild(b);
-    });
-    container.appendChild(r);
-  });
-  
-  const er=el('div','krow');
-  const enter=el('button','key enter'); enter.textContent='제출 ✓'; enter.onclick=(e)=>{ e.stopPropagation(); submitKeypad(); };
-  er.appendChild(enter);
-  container.appendChild(er);
-}
+    }
 
-function updatePreview(){
-  const prev=$('#activePreview'); if(!prev) return;
-  const t=G.composer.text;
-  prev.innerHTML='';
-  
-  // 입력이 아예 없는 극단적인 폴백(G.reqChar가 pre-fill되므로 실유저 사용 불가 영역)
-  if(!t){
-    const activeSpan = el('span', 'active-char');
-    activeSpan.innerHTML = '&nbsp;';
-    prev.appendChild(activeSpan);
-  }
-  else{
-    // 입력 텍스트가 있을 때:
-    // 만약 한 글자(기본 pre-fill된 제시 시작 글자만 있는 경우)면, 그 글자(completed)는 고정하고
-    // 다음 입력될 대기 위치(빈 &nbsp;) 밑에 반짝이는 커서선이 나옵니다.
-    if (t.length <= 1) {
-      const compSpan = el('span', 'completed-text');
-      compSpan.textContent = t;
-      prev.appendChild(compSpan);
-      
-      const activeSpan = el('span', 'active-char');
-      activeSpan.innerHTML = '&nbsp;'; // 한 글자 넓이의 빈 공간
-      prev.appendChild(activeSpan);
-    } else {
-      // 두 글자 이상 입력 중일 때는 가장 마지막 작성 중인 "한 글자" 아래만 밑줄이 반짝입니다.
-      const completedText = t.slice(0, -1);
-      const activeText = t.slice(-1);
-      
-      const compSpan = el('span', 'completed-text');
-      compSpan.textContent = completedText;
-      prev.appendChild(compSpan);
-      
-      const activeSpan = el('span', 'active-char');
-      activeSpan.textContent = activeText;
-      prev.appendChild(activeSpan);
-    }
-  }
-}
-function setFeedback(msg,type){ const f=$('#activeFeedback'); if(!f)return; f.textContent=msg; f.className='cellFeedback '+(type||''); }
+    /* =========================================================
+       쉬운 제시어 100개 하드코딩
+     ========================================================= */
+    const EASY_SEEDS = [
+      '가방', '나무', '사람', '학교', '하늘', '바다', '사과', '수박', '모자', '안경',
+      '자전거', '우산', '시계', '의자', '책상', '공책', '필통', '연필', '가위', '거울',
+      '바지', '치마', '구두', '신발', '양말', '장갑', '이불', '베개', '비누', '치약',
+      '칫솔', '수건', '지갑', '냄비', '소파', '침대', '옷장', '화분', '꽃병', '지우개',
+      '인형', '로봇', '줄넘기', '그네', '시소', '모래', '자갈', '조개', '소라', '고래',
+      '상어', '거북이', '문어', '오징어', '새우', '꽃게', '호랑이', '사자', '토끼', '여우',
+      '원숭이', '코끼리', '기린', '사슴', '강아지', '고양이', '돼지', '오리', '닭장', '나비',
+      '벌레', '거미', '낙타', '양파', '당근', '오이', '감자', '고구마', '고추', '자두',
+      '레몬', '포도', '바나나', '딸기', '수수', '우유', '보석', '구름', '눈물', '눈사람',
+      '선풍기', '전화기', '라디오', '사진', '액자', '단추', '열쇠', '편지', '풍선', '과자'
+    ];
 
-async function submitKeypad(){
-  if(!G || G.checking) return;
-  const word=G.composer.text.trim();
-  if(!word){ setFeedback('글자를 입력해 주세요.','err'); sfxErr(); return; }
-  for(const ch of word){ if(ch<'가'||ch>'힣'){ setFeedback('완성되지 않은 글자가 있어요.','err'); sfxErr(); return; } }
-  
-  // 1. 이전 단어의 마지막 한 글자로부터 두음법칙 변이 집합을 가져옵니다.
-  const lastWord = G.chain[G.chain.length-1].word;
-  const lastChar = lastWord[lastWord.length - 1];
-  const firstCharVariants = deumVariants(lastChar);
-  const suffix = word.substring(1);
-  
-  // 2. 두음법칙 후보 단어들을 만듭니다. (사용자가 입력한 단어 word를 최우선 순위로 설정)
-  const candidatesSet = new Set();
-  candidatesSet.add(word);
-  firstCharVariants.forEach(v => {
-    candidatesSet.add(v + suffix);
-  });
-  const candidates = [...candidatesSet];
-  
-  // 3. 로컬 체크 (글자수 2~5자, 이미 사용 여부) 필터링
-  const validCandidates = candidates.filter(cand => {
-    if(cand.length < 2 || cand.length > 5) return false;
-    if(G.used.has(cand)) return false;
-    return true;
-  });
-  
-  if(validCandidates.length === 0){
-    const anyUsed = candidates.some(cand => G.used.has(cand));
-    if (anyUsed) {
-      setFeedback('이미 나온 단어예요.', 'err');
+    let offlineNounsList = [];
+    if (typeof OFFLINE_NOUNS !== 'undefined') {
+      offlineNounsList = OFFLINE_NOUNS.split(' ');
     } else {
-      setFeedback('글자 수가 맞지 않거나 잘못된 입력이에요.', 'err');
+      offlineNounsList = EASY_SEEDS;
     }
-    sfxErr();
-    return;
-  }
-  
-  G.checking=true; pauseTimer(); setFeedback('우리말샘에서 확인 중… ⏳','checking');
-  
-  // 4. 내장 사전에 후보 단어가 있는지 우선 확인
-  let winner = null;
-  let source = 'offline';
-  for (const cand of validCandidates) {
-    if (DICT.has(cand)) {
-      winner = cand;
-      break;
+    const DICT = new Set(offlineNounsList.filter(w => w && w.length <= 5));
+    const DICT_ARR = [...DICT];
+    // 첫 글자 색인
+    const BY_FIRST = {};
+    for (const w of DICT_ARR) { (BY_FIRST[w[0]] ||= []).push(w); }
+    function continuationsFor(ch) {
+      let list = [];
+      for (const v of deumVariants(ch)) if (BY_FIRST[v]) list = list.concat(BY_FIRST[v]);
+      return list;
     }
-  }
-  
-  // 5. 내장 사전에 없는 경우 온라인 우리말샘으로 병렬 조회 진행
-  if (!winner) {
-    source = 'online';
-    try {
-      const results = await Promise.all(validCandidates.map(async cand => {
-        const r = await checkWord(cand);
-        return { cand, r };
-      }));
-      const successObj = results.find(item => item.r.ok);
-      if (successObj) {
-        winner = successObj.cand;
+
+    /* =========================================================
+       상태
+    ========================================================= */
+    const P_COLORS = ['#ff5d73', '#4d8bff', '#37c26b', '#ff9f2e', '#a361ff', '#18c5c9'];
+    const cfg = { count: 3, time: 20, mode: 'keypad', elim: 'out', hearts: 3, names: [] };
+    let G = null; // 게임 상태
+
+    const $ = s => document.querySelector(s);
+    const el = (t, c) => { const e = document.createElement(t); if (c) e.className = c; return e; };
+
+    /* =========================================================
+       사운드 & TTS 발음 재생
+    ========================================================= */
+    let AC = null;
+    function ac() { if (!AC) { try { AC = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) { } } if (AC && AC.state === 'suspended') AC.resume(); return AC; }
+    function beep(freq, dur, type = 'sine', vol = 0.15) {
+      const c = ac(); if (!c) return;
+      const o = c.createOscillator(), g = c.createGain();
+      o.type = type; o.frequency.value = freq; o.connect(g); g.connect(c.destination);
+      g.gain.setValueAtTime(vol, c.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.001, c.currentTime + dur);
+      o.start(); o.stop(c.currentTime + dur);
+    }
+    const sfxKey = () => beep(520, 0.05, 'square', 0.06);
+    const sfxOk = () => { beep(660, 0.09, 'sine', 0.16); setTimeout(() => beep(990, 0.14, 'sine', 0.16), 90); };
+    const sfxErr = () => { beep(180, 0.18, 'sawtooth', 0.14); };
+    const sfxTick = () => beep(880, 0.05, 'sine', 0.10);
+    const sfxWin = () => { [523, 659, 784, 1046].forEach((f, i) => setTimeout(() => beep(f, 0.18, 'triangle', 0.18), i * 130)); };
+
+    /* 브라우저 TTS 한국어 발음 재생 */
+    function speak(text) {
+      if (!window.speechSynthesis) return;
+      try {
+        window.speechSynthesis.cancel();
+        const u = new SpeechSynthesisUtterance(text);
+        u.lang = 'ko-KR';
+        u.rate = 0.95;
+        u.pitch = 1.0;
+        window.speechSynthesis.speak(u);
+      } catch (e) { }
+    }
+
+    /* 중앙 전광판 스크택스트 동기화 */
+    function updateCenterScreen(type, word, color) {
+      const label = $('#screenLabel');
+      const wordEl = $('#screenWord');
+      const screen = $('#centerScreen');
+
+      if (type === 'seed') {
+        label.textContent = '제시어';
+        wordEl.textContent = word + '!';
+        screen.style.setProperty('--pcol', 'var(--gold)');
       } else {
-        const originalResult = results.find(item => item.cand === word) || results[0];
-        setFeedback(originalResult.r.reason || '사전에 없는 단어예요.', 'err');
+        const pName = G ? G.players[G.cur].name : '';
+        label.textContent = pName ? pName + ' 성공!' : '최근 성공 단어';
+        wordEl.textContent = word + '!';
+        screen.style.setProperty('--pcol', color || '#fff');
+      }
+    }
+
+    /* 중앙 전광판 내 팝업 연출 및 TTS 재생 */
+    function showWordOverlay(type, word, color, callback) {
+      updateCenterScreen(type, word, color);
+
+      const wordEl = $('#screenWord');
+      wordEl.classList.remove('pop');
+      void wordEl.offsetWidth; // Reflow 트리거
+      wordEl.classList.add('pop');
+
+      const ttsText = type === 'seed' ? '제시어 ' + word : word;
+      speak(ttsText);
+
+      stopTimer(); // 연출 시간 동안 타이머 일시정지
+      setTimeout(() => {
+        if (callback) callback();
+      }, 1500);
+    }
+
+    /* =========================================================
+       SETUP 화면
+    ========================================================= */
+    function buildSetup() {
+      const pc = $('#playerCount'); pc.innerHTML = '';
+      for (let n = 2; n <= 6; n++) {
+        const b = el('button', 'chip' + (n === cfg.count ? ' on' : '')); b.textContent = n + '인'; b.dataset.n = n;
+        b.onclick = () => { cfg.count = n; buildSetup(); };
+        pc.appendChild(b);
+      }
+    }
+    $('#timeOpt').onclick = e => { const b = e.target.closest('.chip'); if (!b) return; cfg.time = +b.dataset.t; sel('#timeOpt', b); };
+    $('#elimMode').onclick = e => {
+      const b = e.target.closest('.chip'); if (!b) return; cfg.elim = b.dataset.e; sel('#elimMode', b);
+      $('#heartRow').classList.toggle('hidden', cfg.elim !== 'heart');
+    };
+    $('#heartCount').onclick = e => { const b = e.target.closest('.chip'); if (!b) return; cfg.hearts = +b.dataset.h; sel('#heartCount', b); };
+    function sel(container, btn) { document.querySelectorAll(container + ' .chip').forEach(c => c.classList.remove('on')); btn.classList.add('on'); }
+    $('#startBtn').onclick = () => { ac(); startGame(); };
+
+    /* =========================================================
+       우리말샘 오픈 API (단어 검증)
+    ========================================================= */
+    const URIMAL_KEY = '8F102F8109E1CA5966761BC6E88A5ED8';
+    async function urimalFetch(word) {
+      const targetUrl = 'https://opendict.korean.go.kr/api/search?key=' + URIMAL_KEY
+        + '&q=' + encodeURIComponent(word) + '&req_type=json&advanced=y&method=exact&num=10';
+      const url = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(targetUrl);
+      const ctrl = new AbortController();
+      const to = setTimeout(() => ctrl.abort(), 4000);
+      try {
+        const res = await fetch(url, { signal: ctrl.signal });
+        clearTimeout(to);
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        const data = await res.json();
+        return { ok: true, data };
+      } catch (e) { clearTimeout(to); return { ok: false, error: e }; }
+    }
+    function urimalAnalyze(data, word) {
+      const ch = data && data.channel;
+      let items = ch && ch.item ? (Array.isArray(ch.item) ? ch.item : [ch.item]) : [];
+      const norm = s => String(s || '').replace(/[^가-힣]/g, '');
+      const exact = items.filter(it => norm(it.word) === word);
+      if (!exact.length) return { found: false };
+      let sawPos = false, noun = false, proper = false;
+      for (const it of exact) {
+        const poss = [];
+        if (it.pos) poss.push(it.pos);
+        const senses = it.sense ? (Array.isArray(it.sense) ? it.sense : [it.sense]) : [];
+        for (const s of senses) { if (s && s.pos) poss.push(s.pos); }
+        for (let p of poss) {
+          p = String(p);
+          if (p.trim()) {
+            sawPos = true;
+            if (p.indexOf('명사') >= 0) {
+              if (p.indexOf('고유') >= 0 || p.indexOf('지명') >= 0 || p.indexOf('인명') >= 0) {
+                proper = true;
+              } else {
+                noun = true;
+              }
+            }
+          }
+        }
+      }
+      if (noun) return { found: true, noun: true };
+      if (proper) return { found: true, noun: false, proper: true };
+      if (!sawPos) return { found: true, noun: true };
+      return { found: true, noun: false };
+    }
+    async function checkWord(word) {
+      if (DICT.has(word)) return { ok: true, source: 'offline' };
+      const r = await urimalFetch(word);
+      if (r.ok) {
+        const a = urimalAnalyze(r.data, word);
+        if (a.found && a.noun) return { ok: true, source: 'online' };
+        if (a.found && a.proper) return { ok: false, reason: '고유명사(인명, 지명 등)는 사용할 수 없어요', source: 'online' };
+        if (a.found && !a.noun) return { ok: false, reason: '명사가 아니에요 (우리말샘)', source: 'online' };
+        return { ok: false, reason: '우리말샘에 없는 단어예요', source: 'online' };
+      }
+      return { ok: false, reason: '사전에 없는 단어예요 (오프라인)', source: 'offline' };
+    }
+
+    /* =========================================================
+       게임 시작 / 진행
+    ========================================================= */
+    function startGame() {
+      const players = [];
+      for (let i = 0; i < cfg.count; i++) {
+        players.push({
+          id: i, name: (i + 1) + '번',
+          color: P_COLORS[i], hearts: cfg.hearts, out: false, lastWord: ''
+        });
+      }
+      const seed = EASY_SEEDS[(Math.random() * EASY_SEEDS.length) | 0];
+
+      G = {
+        players, time: cfg.time, elim: cfg.elim,
+        cur: (Math.random() * players.length) | 0,
+        used: new Set([seed]),
+        chain: [{ type: 'seed', word: seed }],
+        reqChar: applyDeum(seed[seed.length - 1]),
+        turns: 0, timer: null, remain: 0, composer: new Hangul(),
+        kbShift: false, checking: false, warnedOffline: false, seed
+      };
+      $('#setup').classList.add('hidden');
+      $('#result').classList.add('hidden');
+      $('#game').classList.remove('hidden');
+      renderChain();
+
+      // 첫 제시어 팝업 연출 후 턴 시작
+      showWordOverlay('seed', seed, null, () => {
+        startTurn();
+      });
+    }
+    function aliveIdx() { return G.players.map((p, i) => p.out ? -1 : i).filter(i => i >= 0); }
+    function nextAlive(from) { const n = G.players.length; for (let k = 1; k <= n; k++) { const i = (from + k) % n; if (!G.players[i].out) return i; } return from; }
+
+    function startTurn() {
+      G.composer.reset();
+      G.composer.committed = G.reqChar; // 첫 글자 기본 입력 처리
+      G.kbShift = false; G.checking = false;
+      renderGrid();
+      startTimer(true);
+    }
+
+    /* ---------- 타이머 ---------- */
+    function startTimer(reset) {
+      stopTimer();
+      const wrap = $('#timerBarWrap');
+      if (G.time === 0) { wrap.style.display = 'none'; return; }
+      wrap.style.display = '';
+      if (reset) G.remain = G.time;
+      updateTimerUI();
+      G.timer = setInterval(() => {
+        G.remain -= 0.1;
+        if (G.remain > 0 && Math.abs(G.remain - Math.round(G.remain)) < 0.06 && Math.round(G.remain) <= 5) sfxTick();
+        if (G.remain <= 0) {
+          G.remain = 0;
+          updateTimerUI();
+          stopTimer();
+          if (!G.checking) {
+            onFail('시간 초과');
+          }
+          return;
+        }
+        updateTimerUI();
+      }, 100);
+    }
+    function stopTimer() { if (G.timer) { clearInterval(G.timer); G.timer = null; } }
+    function pauseTimer() { stopTimer(); }
+    function updateTimerUI() {
+      const wrap = $('#timerBarWrap');
+      if (!wrap) return;
+      const percent = (G.remain / G.time) * 100;
+      $('#timerBarFill').style.width = percent + '%';
+      wrap.classList.toggle('warn', G.remain <= 5.05);
+    }
+
+    /* =========================================================
+       렌더링
+    ========================================================= */
+    function renderChain() {
+      const c = $('#chain'); c.innerHTML = '';
+      G.chain.forEach((item, idx) => {
+        if (idx > 0) { const a = el('span', 'arrow'); a.textContent = '→'; c.appendChild(a); }
+        const t = el('div', 'wtile' + (item.type === 'seed' ? ' seed' : '') + ' pop'); t.textContent = item.word;
+        if (item.by != null) { const w = el('span', 'who'); w.textContent = G.players[item.by].name; w.style.background = G.players[item.by].color; t.appendChild(w); }
+        c.appendChild(t);
+      });
+      // 세로 스크롤로 하단까지 자동 스크롤 연동
+      c.parentElement.scrollTop = c.parentElement.scrollHeight;
+    }
+    function renderGrid() {
+      const grid = $('#pgrid'); grid.innerHTML = '';
+      const bottom = $('#gameBottom'); bottom.innerHTML = '';
+
+      for (let i = 0; i < G.players.length; i++) {
+        const p = G.players[i];
+        const active = (i === G.cur && !p.out);
+
+        // 1. 상단 플레이어 정보 카드
+        const cell = el('div', 'pcell');
+        if (active) cell.classList.add('active');
+        if (p.out) cell.classList.add('out');
+        cell.style.setProperty('--pcol', p.color);
+
+        const head = el('div', 'pcell-head');
+        const badge = el('span', 'pbadge'); badge.textContent = (i + 1); badge.style.background = p.color;
+        const nm = el('span', 'pcell-name'); nm.textContent = p.name;
+        const st = el('span', 'pcell-status');
+        if (p.out) { const o = el('span', 'outtag'); o.textContent = '아웃'; st.appendChild(o); }
+        else if (G.elim === 'heart') { const l = el('span', 'life'); l.textContent = '❤️'.repeat(p.hearts); st.appendChild(l); }
+        head.append(badge, nm, st); cell.appendChild(head);
+
+        const body = el('div', 'pcell-body');
+        const last = el('div', 'cellLast');
+        if (active) {
+          last.textContent = '입력 중...';
+          last.classList.add('typing-status');
+        } else {
+          if (p.lastWord) { last.textContent = p.lastWord; } else { last.textContent = '대기 중'; last.classList.add('muted'); }
+        }
+        body.appendChild(last);
+        cell.appendChild(body);
+        grid.appendChild(cell);
+
+        // 2. 하단 액션 카드 (활성 사용자 영역 정렬)
+        const bCell = el('div', 'pcell-bottom-action');
+        bCell.style.setProperty('--pcol', p.color);
+        if (active) {
+          bCell.classList.add('active');
+
+          const tag = el('div', 'turnTag'); tag.textContent = '내 차례!';
+
+          const reqBox = el('div', 'req-char-box');
+          const reqSyl = el('span', 'req-syl-inline'); reqSyl.textContent = G.reqChar;
+          const alts = deumVariants(G.reqChar).filter(c => c !== G.reqChar);
+          const reqAlt = el('span', 'req-alt-inline'); reqAlt.textContent = alts.length ? ' 또는 ' + alts.join('·') : '';
+          reqBox.append(reqSyl, reqAlt);
+
+          const pv = el('div', 'cellPreview'); pv.id = 'activePreview';
+          const fb = el('div', 'cellFeedback'); fb.id = 'activeFeedback';
+          bCell.append(tag, reqBox, pv, fb);
+
+          const kbdContainer = el('div', 'keypad-inline');
+          renderInlineKeypad(kbdContainer);
+          bCell.appendChild(kbdContainer);
+        }
+        bottom.appendChild(bCell);
+      }
+      updatePreview();
+    }
+
+    /* ---------- 키패드(플레이어별 인라인) ---------- */
+    const KEY_ROWS = [
+      ['ㅂ', 'ㅈ', 'ㄷ', 'ㄱ', 'ㅅ', 'ㅛ', 'ㅕ', 'ㅑ', 'ㅐ', 'ㅔ'],
+      ['ㅁ', 'ㄴ', 'ㅇ', 'ㄹ', 'ㅎ', 'ㅗ', 'ㅓ', 'ㅏ', 'ㅣ'],
+      ['SHIFT', 'ㅋ', 'ㅌ', 'ㅊ', 'ㅍ', 'ㅠ', 'ㅜ', 'ㅡ', 'DEL']
+    ];
+    const SHIFT_MAP = { 'ㅂ': 'ㅃ', 'ㅈ': 'ㅉ', 'ㄷ': 'ㄸ', 'ㄱ': 'ㄲ', 'ㅅ': 'ㅆ', 'ㅐ': 'ㅒ', 'ㅔ': 'ㅖ' };
+    function renderInlineKeypad(container) {
+      container.innerHTML = '';
+
+      const pass = el('button', 'btn-pass-inline'); pass.innerHTML = '포기 ✋';
+      pass.onclick = (e) => { e.stopPropagation(); if (!G || G.checking) return; stopTimer(); onFail('포기'); };
+      container.appendChild(pass);
+
+      KEY_ROWS.forEach(row => {
+        const r = el('div', 'krow');
+        row.forEach(k => {
+          let b;
+          if (k === 'SHIFT') {
+            b = el('button', 'key util shift' + (G.kbShift ? ' on' : '')); b.textContent = '⇧';
+            b.onclick = (e) => { e.stopPropagation(); if (G.checking) return; G.kbShift = !G.kbShift; renderInlineKeypad(container); };
+          }
+          else if (k === 'DEL') {
+            b = el('button', 'key del'); b.textContent = '⌫';
+            b.onclick = (e) => { e.stopPropagation(); if (G.checking) return; G.composer.backspace(); updatePreview(); sfxKey(); };
+          }
+          else {
+            const out = (G.kbShift && SHIFT_MAP[k]) ? SHIFT_MAP[k] : k;
+            b = el('button', 'key'); b.textContent = out;
+            b.onclick = (e) => {
+              e.stopPropagation();
+              if (G.checking) return;
+              G.composer.input(out);
+              if (G.kbShift) { G.kbShift = false; renderInlineKeypad(container); }
+              updatePreview();
+              sfxKey();
+            };
+          }
+          r.appendChild(b);
+        });
+        container.appendChild(r);
+      });
+
+      const er = el('div', 'krow');
+      const enter = el('button', 'key enter'); enter.textContent = '제출 ✓'; enter.onclick = (e) => { e.stopPropagation(); submitKeypad(); };
+      er.appendChild(enter);
+      container.appendChild(er);
+    }
+
+    function updatePreview() {
+      const prev = $('#activePreview'); if (!prev) return;
+      const t = G.composer.text;
+      prev.innerHTML = '';
+
+      // 입력이 아예 없는 극단적인 폴백(G.reqChar가 pre-fill되므로 실유저 사용 불가 영역)
+      if (!t) {
+        const activeSpan = el('span', 'active-char');
+        activeSpan.innerHTML = '&nbsp;';
+        prev.appendChild(activeSpan);
+      }
+      else {
+        // 입력 텍스트가 있을 때:
+        // 만약 한 글자(기본 pre-fill된 제시 시작 글자만 있는 경우)면, 그 글자(completed)는 고정하고
+        // 다음 입력될 대기 위치(빈 &nbsp;) 밑에 반짝이는 커서선이 나옵니다.
+        if (t.length <= 1) {
+          const compSpan = el('span', 'completed-text');
+          compSpan.textContent = t;
+          prev.appendChild(compSpan);
+
+          const activeSpan = el('span', 'active-char');
+          activeSpan.innerHTML = '&nbsp;'; // 한 글자 넓이의 빈 공간
+          prev.appendChild(activeSpan);
+        } else {
+          // 두 글자 이상 입력 중일 때는 가장 마지막 작성 중인 "한 글자" 아래만 밑줄이 반짝입니다.
+          const completedText = t.slice(0, -1);
+          const activeText = t.slice(-1);
+
+          const compSpan = el('span', 'completed-text');
+          compSpan.textContent = completedText;
+          prev.appendChild(compSpan);
+
+          const activeSpan = el('span', 'active-char');
+          activeSpan.textContent = activeText;
+          prev.appendChild(activeSpan);
+        }
+      }
+    }
+    function setFeedback(msg, type) { const f = $('#activeFeedback'); if (!f) return; f.textContent = msg; f.className = 'cellFeedback ' + (type || ''); }
+
+    async function submitKeypad() {
+      if (!G || G.checking) return;
+      const word = G.composer.text.trim();
+      if (!word) { setFeedback('글자를 입력해 주세요.', 'err'); sfxErr(); return; }
+      for (const ch of word) { if (ch < '가' || ch > '힣') { setFeedback('완성되지 않은 글자가 있어요.', 'err'); sfxErr(); return; } }
+
+      // 1. 이전 단어의 마지막 한 글자로부터 두음법칙 변이 집합을 가져옵니다.
+      const lastWord = G.chain[G.chain.length - 1].word;
+      const lastChar = lastWord[lastWord.length - 1];
+      const firstCharVariants = deumVariants(lastChar);
+      const suffix = word.substring(1);
+
+      // 2. 두음법칙 후보 단어들을 만듭니다. (사용자가 입력한 단어 word를 최우선 순위로 설정)
+      const candidatesSet = new Set();
+      candidatesSet.add(word);
+      firstCharVariants.forEach(v => {
+        candidatesSet.add(v + suffix);
+      });
+      const candidates = [...candidatesSet];
+
+      // 3. 로컬 체크 (글자수 2~5자, 이미 사용 여부) 필터링
+      const validCandidates = candidates.filter(cand => {
+        if (cand.length < 2 || cand.length > 5) return false;
+        if (G.used.has(cand)) return false;
+        return true;
+      });
+
+      if (validCandidates.length === 0) {
+        const anyUsed = candidates.some(cand => G.used.has(cand));
+        if (anyUsed) {
+          setFeedback('이미 나온 단어예요.', 'err');
+        } else {
+          setFeedback('글자 수가 맞지 않거나 잘못된 입력이에요.', 'err');
+        }
         sfxErr();
-        G.checking = false;
-        startTimer(false);
         return;
       }
-    } catch(e) {
-      setFeedback('사전 조회 중 오류가 발생했어요.', 'err');
-      sfxErr();
-      G.checking = false;
-      startTimer(false);
-      return;
+
+      G.checking = true; setFeedback('우리말샘에서 확인 중… ⏳', 'checking');
+
+      // 4. 내장 사전에 후보 단어가 있는지 우선 확인
+      let winner = null;
+      let source = 'offline';
+      for (const cand of validCandidates) {
+        if (DICT.has(cand)) {
+          winner = cand;
+          break;
+        }
+      }
+
+      // 5. 내장 사전에 없는 경우 온라인 우리말샘으로 병렬 조회 진행
+      if (!winner) {
+        source = 'online';
+        try {
+          const results = await Promise.all(validCandidates.map(async cand => {
+            const r = await checkWord(cand);
+            return { cand, r };
+          }));
+          const successObj = results.find(item => item.r.ok);
+          if (successObj) {
+            winner = successObj.cand;
+          } else {
+            const originalResult = results.find(item => item.cand === word) || results[0];
+            setFeedback(originalResult.r.reason || '사전에 없는 단어예요.', 'err');
+            sfxErr();
+            G.checking = false;
+            if (G.remain <= 0) {
+              onFail('시간 초과');
+            } else {
+              startTimer(false);
+            }
+            return;
+          }
+        } catch (e) {
+          setFeedback('사전 조회 중 오류가 발생했어요.', 'err');
+          sfxErr();
+          G.checking = false;
+          if (G.remain <= 0) {
+            onFail('시간 초과');
+          } else {
+            startTimer(false);
+          }
+          return;
+        }
+      }
+
+      if (!G) return;
+      if (source === 'offline' && !G.warnedOffline) { G.warnedOffline = true; flash('우리말샘 연결이 막혀 내장 사전으로 판정해요'); }
+
+      G.checking = false; stopTimer();
+      G.used.add(winner);
+      G.players[G.cur].lastWord = winner;
+      G.chain.push({ word: winner, by: G.cur });
+      G.reqChar = applyDeum(winner[winner.length - 1]);
+      renderChain();
+
+      setFeedback(source === 'offline' ? '정답! (오프라인 사전) 🎉' : '정답! 🎉', 'ok'); sfxOk();
+
+      // 성공 전광판 연출 후 다음 턴으로
+      showWordOverlay('success', winner, G.players[G.cur].color, () => {
+        G.turns++;
+        advance();
+      });
     }
-  }
-  
-  if(!G) return;
-  if(source === 'offline' && !G.warnedOffline){ G.warnedOffline=true; flash('우리말샘 연결이 막혀 내장 사전으로 판정해요'); }
-  
-  G.checking=false; stopTimer();
-  G.used.add(winner);
-  G.players[G.cur].lastWord=winner;
-  G.chain.push({word: winner, by:G.cur});
-  G.reqChar=applyDeum(winner[winner.length-1]);
-  renderChain();
-  
-  setFeedback(source==='offline'?'정답! (오프라인 사전) 🎉':'정답! 🎉','ok'); sfxOk();
-  
-  // 성공 전광판 연출 후 다음 턴으로
-  showWordOverlay('success', winner, G.players[G.cur].color, () => {
-    G.turns++;
-    advance();
-  });
-}
 
-/* =========================================================
-   진행/판정
-========================================================= */
-function advance(){
-  const alive=aliveIdx();
-  if(alive.length<=1){ endGame(); return; }
-  G.cur=nextAlive(G.cur);
-  setTimeout(startTurn,150);
-}
-function onFail(reason){
-  if(!G || G.checking) return;
-  stopTimer();
-  const p=G.players[G.cur]; sfxErr();
-  if(G.elim==='out') p.out=true;
-  else { p.hearts=Math.max(0,p.hearts-1); if(p.hearts<=0) p.out=true; }
-  renderGrid();
-  flash(reason+(p.out?' · '+p.name+' 아웃!':' · '+p.name+' 하트 -1'));
-  
-  const alive=aliveIdx();
-  if(alive.length<=1){ setTimeout(endGame,800); return; }
-  
-  const seed = EASY_SEEDS[(Math.random()*EASY_SEEDS.length)|0];
-  G.chain.push({type:'seed', word:seed});
-  G.reqChar=applyDeum(seed[seed.length-1]);
-  G.used.add(seed);
-  renderChain();
-  
-  // 새 제시어 전광판 연출 후 다음 플레이어로 시작
-  showWordOverlay('seed', seed, null, () => {
-    G.cur=nextAlive(G.cur);
-    startTurn();
-  });
-}
-function flash(msg){
-  const t=el('div','toast'); t.textContent=msg;
-  const g=$('#game'); g.appendChild(t);
-  setTimeout(()=>t.remove(),1300);
-}
+    /* =========================================================
+       진행/판정
+    ========================================================= */
+    function advance() {
+      const alive = aliveIdx();
+      if (alive.length <= 1) { endGame(); return; }
+      G.cur = nextAlive(G.cur);
+      setTimeout(startTurn, 150);
+    }
+    function onFail(reason) {
+      if (!G || G.checking) return;
+      stopTimer();
+      const p = G.players[G.cur]; sfxErr();
+      if (G.elim === 'out') p.out = true;
+      else { p.hearts = Math.max(0, p.hearts - 1); if (p.hearts <= 0) p.out = true; }
+      renderGrid();
+      flash(reason + (p.out ? ' · ' + p.name + ' 아웃!' : ' · ' + p.name + ' 하트 -1'));
 
-/* =========================================================
-   결과
-========================================================= */
-function endGame(){
-  stopTimer();
-  const winner=aliveIdx().length? G.players[aliveIdx()[0]] : G.players[G.cur];
-  $('#game').classList.add('hidden');
-  $('#result').classList.remove('hidden');
-  const wn=$('#winName'); wn.textContent=winner.name; wn.style.color='#fff'; wn.style.textShadow='0 4px 0 '+winner.color;
-  const wordCount=G.chain.length;
-  $('#resultStats').innerHTML=
-    '<span>이어진 단어 <b>'+wordCount+'</b>개</span>'+
-    '<span>총 턴 <b>'+G.turns+'</b></span>'+
-    '<span>참가 <b>'+G.players.length+'</b>명</span>';
-  sfxWin(); confetti();
-}
-function confetti(){
-  const em=['🎉','👑','⭐','🎊','✨','🏆'];
-  for(let i=0;i<40;i++){
-    const s=el('div','emoji-fall'); s.textContent=em[(Math.random()*em.length)|0];
-    s.style.left=(Math.random()*100)+'vw';
-    s.style.animationDuration=(2.4+Math.random()*2.2)+'s';
-    s.style.animationDelay=(Math.random()*0.8)+'s';
-    s.style.fontSize=(22+Math.random()*26)+'px';
-    document.body.appendChild(s);
-    setTimeout(()=>s.remove(),5200);
-  }
-}
-$('#againSame').onclick=()=>{ startGame(); };
-$('#againNew').onclick=()=>{ $('#result').classList.add('hidden'); $('#setup').classList.remove('hidden'); buildSetup(); };
+      const alive = aliveIdx();
+      if (alive.length <= 1) { setTimeout(endGame, 800); return; }
 
-/* 홈 및 전체화면 핸들러 */
-$('#homeBtn').onclick=()=>{ if(confirm('게임을 종료하고 홈(설정)으로 돌아갈까요?')){ stopTimer(); $('#game').classList.add('hidden'); $('#setup').classList.remove('hidden'); buildSetup(); } };
-$('#fullscreenBtn').onclick=()=>{
-  if(!document.fullscreenElement){
-    document.documentElement.requestFullscreen().catch(err=>{
-      alert("전체화면을 실행할 수 없습니다: " + err.message);
+      const seed = EASY_SEEDS[(Math.random() * EASY_SEEDS.length) | 0];
+      G.chain.push({ type: 'seed', word: seed });
+      G.reqChar = applyDeum(seed[seed.length - 1]);
+      G.used.add(seed);
+      renderChain();
+
+      // 새 제시어 전광판 연출 후 다음 플레이어로 시작
+      showWordOverlay('seed', seed, null, () => {
+        G.cur = nextAlive(G.cur);
+        startTurn();
+      });
+    }
+    function flash(msg) {
+      const t = el('div', 'toast'); t.textContent = msg;
+      const g = $('#game'); g.appendChild(t);
+      setTimeout(() => t.remove(), 1300);
+    }
+
+    /* =========================================================
+       결과
+    ========================================================= */
+    function endGame() {
+      stopTimer();
+      const winner = aliveIdx().length ? G.players[aliveIdx()[0]] : G.players[G.cur];
+      $('#game').classList.add('hidden');
+      $('#result').classList.remove('hidden');
+      const wn = $('#winName'); wn.textContent = winner.name; wn.style.color = '#fff'; wn.style.textShadow = '0 4px 0 ' + winner.color;
+      const wordCount = G.chain.length;
+      $('#resultStats').innerHTML =
+        '<span>이어진 단어 <b>' + wordCount + '</b>개</span>' +
+        '<span>총 턴 <b>' + G.turns + '</b></span>' +
+        '<span>참가 <b>' + G.players.length + '</b>명</span>';
+      sfxWin(); confetti();
+    }
+    function confetti() {
+      const em = ['🎉', '👑', '⭐', '🎊', '✨', '🏆'];
+      for (let i = 0; i < 40; i++) {
+        const s = el('div', 'emoji-fall'); s.textContent = em[(Math.random() * em.length) | 0];
+        s.style.left = (Math.random() * 100) + 'vw';
+        s.style.animationDuration = (2.4 + Math.random() * 2.2) + 's';
+        s.style.animationDelay = (Math.random() * 0.8) + 's';
+        s.style.fontSize = (22 + Math.random() * 26) + 'px';
+        document.body.appendChild(s);
+        setTimeout(() => s.remove(), 5200);
+      }
+    }
+    $('#againSame').onclick = () => { startGame(); };
+    $('#againNew').onclick = () => { $('#result').classList.add('hidden'); $('#setup').classList.remove('hidden'); buildSetup(); };
+
+    /* 홈 및 전체화면 핸들러 */
+    $('#homeBtn').onclick = () => { if (confirm('게임을 종료하고 홈(설정)으로 돌아갈까요?')) { stopTimer(); $('#game').classList.add('hidden'); $('#setup').classList.remove('hidden'); buildSetup(); } };
+    $('#fullscreenBtn').onclick = () => {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(err => {
+          alert("전체화면을 실행할 수 없습니다: " + err.message);
+        });
+      } else {
+        document.exitFullscreen();
+      }
+    };
+    document.addEventListener('fullscreenchange', () => {
+      const btn = $('#fullscreenBtn');
+      if (!btn) return;
+      if (document.fullscreenElement) {
+        btn.textContent = '✖️';
+        btn.title = '전체화면 해제';
+      } else {
+        btn.textContent = '🖥️';
+        btn.title = '전체화면';
+      }
     });
-  }else{
-    document.exitFullscreen();
-  }
-};
-document.addEventListener('fullscreenchange', ()=>{
-  const btn=$('#fullscreenBtn');
-  if(!btn) return;
-  if(document.fullscreenElement){
-    btn.textContent='✖️';
-    btn.title='전체화면 해제';
-  }else{
-    btn.textContent='🖥️';
-    btn.title='전체화면';
-  }
-});
 
 
-/* =========================================================
-   물리 키보드 입력 핸들러 (QWERTY 매핑 & 한글 자모 직접 입력 지원)
-========================================================= */
-const KEY_MAP = {
-  'q': 'ㅂ', 'Q': 'ㅃ',
-  'w': 'ㅈ', 'W': 'ㅉ',
-  'e': 'ㄷ', 'E': 'ㄸ',
-  'r': 'ㄱ', 'R': 'ㄲ',
-  't': 'ㅅ', 'T': 'ㅆ',
-  'y': 'ㅛ', 'Y': 'ㅛ',
-  'u': 'ㅕ', 'U': 'ㅕ',
-  'i': 'ㅑ', 'I': 'ㅑ',
-  'o': 'ㅐ', 'O': 'ㅒ',
-  'p': 'ㅔ', 'P': 'ㅖ',
-  'a': 'ㅁ', 'A': 'ㅁ',
-  's': 'ㄴ', 'S': 'ㄴ',
-  'd': 'ㅇ', 'D': 'ㅇ',
-  'f': 'ㄹ', 'F': 'ㄹ',
-  'g': 'ㅎ', 'G': 'ㅎ',
-  'h': 'ㅗ', 'H': 'ㅗ',
-  'j': 'ㅓ', 'J': 'ㅓ',
-  'k': 'ㅏ', 'K': 'ㅏ',
-  'l': 'ㅣ', 'L': 'ㅣ',
-  'z': 'ㅋ', 'Z': 'ㅋ',
-  'x': 'ㅌ', 'X': 'ㅌ',
-  'c': 'ㅊ', 'C': 'ㅊ',
-  'v': 'ㅍ', 'V': 'ㅍ',
-  'b': 'ㅠ', 'B': 'ㅠ',
-  'n': 'ㅜ', 'N': 'ㅜ',
-  'm': 'ㅡ', 'M': 'ㅡ'
-};
+    /* =========================================================
+       물리 키보드 입력 핸들러 (QWERTY 매핑 & 한글 자모 직접 입력 지원)
+    ========================================================= */
+    const KEY_MAP = {
+      'q': 'ㅂ', 'Q': 'ㅃ',
+      'w': 'ㅈ', 'W': 'ㅉ',
+      'e': 'ㄷ', 'E': 'ㄸ',
+      'r': 'ㄱ', 'R': 'ㄲ',
+      't': 'ㅅ', 'T': 'ㅆ',
+      'y': 'ㅛ', 'Y': 'ㅛ',
+      'u': 'ㅕ', 'U': 'ㅕ',
+      'i': 'ㅑ', 'I': 'ㅑ',
+      'o': 'ㅐ', 'O': 'ㅒ',
+      'p': 'ㅔ', 'P': 'ㅖ',
+      'a': 'ㅁ', 'A': 'ㅁ',
+      's': 'ㄴ', 'S': 'ㄴ',
+      'd': 'ㅇ', 'D': 'ㅇ',
+      'f': 'ㄹ', 'F': 'ㄹ',
+      'g': 'ㅎ', 'G': 'ㅎ',
+      'h': 'ㅗ', 'H': 'ㅗ',
+      'j': 'ㅓ', 'J': 'ㅓ',
+      'k': 'ㅏ', 'K': 'ㅏ',
+      'l': 'ㅣ', 'L': 'ㅣ',
+      'z': 'ㅋ', 'Z': 'ㅋ',
+      'x': 'ㅌ', 'X': 'ㅌ',
+      'c': 'ㅊ', 'C': 'ㅊ',
+      'v': 'ㅍ', 'V': 'ㅍ',
+      'b': 'ㅠ', 'B': 'ㅠ',
+      'n': 'ㅜ', 'N': 'ㅜ',
+      'm': 'ㅡ', 'M': 'ㅡ'
+    };
 
-const ALL_JAMOS = new Set([
-  'ㄱ','ㄲ','ㄴ','ㄷ','ㄸ','ㄹ','ㅁ','ㅂ','ㅃ','ㅅ','ㅆ','ㅇ','ㅈ','ㅉ','ㅊ','ㅋ','ㅌ','ㅍ','ㅎ',
-  'ㅏ','ㅐ','ㅑ','ㅒ','ㅓ','ㅔ','ㅕ','ㅖ','ㅗ','ㅛ','ㅜ','ㅠ','ㅡ','ㅣ',
-  'ㄳ','%EB%89%B6','ㄶ','ㄺ','ㄻ','ㄼ','ㄽ','ㄾ','ㄿ','ㅀ','ㅄ','ㅘ','ㅙ','ㅚ','ㅝ','ㅞ','ㅟ','ㅢ'
-]);
+    const ALL_JAMOS = new Set([
+      'ㄱ', 'ㄲ', 'ㄴ', 'ㄷ', 'ㄸ', 'ㄹ', 'ㅁ', 'ㅂ', 'ㅃ', 'ㅅ', 'ㅆ', 'ㅇ', 'ㅈ', 'ㅉ', 'ㅊ', 'ㅋ', 'ㅌ', 'ㅍ', 'ㅎ',
+      'ㅏ', 'ㅐ', 'ㅑ', 'ㅒ', 'ㅓ', 'ㅔ', 'ㅕ', 'ㅖ', 'ㅗ', 'ㅛ', 'ㅜ', 'ㅠ', 'ㅡ', 'ㅣ',
+      'ㄳ', '%EB%89%B6', 'ㄶ', 'ㄺ', 'ㄻ', 'ㄼ', 'ㄽ', 'ㄾ', 'ㄿ', 'ㅀ', 'ㅄ', 'ㅘ', 'ㅙ', 'ㅚ', 'ㅝ', 'ㅞ', 'ㅟ', 'ㅢ'
+    ]);
 
-// URL decode standard Korean compounds in Jamo Set (e.g. ㄳ, ㄵ, ㄶ, ㄺ, ㄻ, ㄼ, ㄽ, ㄾ, ㄿ, ㅀ, ㅄ)
-const COMPOUND_JAMOS = ['ㄳ','ㄵ','ㄶ','ㄺ','ㄻ','ㄼ','ㄽ','ㄾ','ㄿ','ㅀ','ㅄ','ㅘ','ㅙ','ㅚ','ㅝ','ㅞ','ㅟ','ㅢ'];
-COMPOUND_JAMOS.forEach(j => ALL_JAMOS.add(j));
+    // URL decode standard Korean compounds in Jamo Set (e.g. ㄳ, ㄵ, ㄶ, ㄺ, ㄻ, ㄼ, ㄽ, ㄾ, ㄿ, ㅀ, ㅄ)
+    const COMPOUND_JAMOS = ['ㄳ', 'ㄵ', 'ㄶ', 'ㄺ', 'ㄻ', 'ㄼ', 'ㄽ', 'ㄾ', 'ㄿ', 'ㅀ', 'ㅄ', 'ㅘ', 'ㅙ', 'ㅚ', 'ㅝ', 'ㅞ', 'ㅟ', 'ㅢ'];
+    COMPOUND_JAMOS.forEach(j => ALL_JAMOS.add(j));
 
-window.addEventListener('keydown', (e) => {
-  if (!G || G.checking) return;
-  if ($('#game').classList.contains('hidden')) return;
-  if (e.ctrlKey || e.altKey || e.metaKey) return;
-  
-  const key = e.key;
-  if (key.startsWith('F') && key.length > 1) return;
-  
-  if (key === 'Backspace') {
-    e.preventDefault();
-    G.composer.backspace();
-    updatePreview();
-    sfxKey();
-  } else if (key === 'Enter') {
-    e.preventDefault();
-    submitKeypad();
-  } else if (KEY_MAP[key]) {
-    e.preventDefault();
-    G.composer.input(KEY_MAP[key]);
-    updatePreview();
-    sfxKey();
-  } else if (ALL_JAMOS.has(key)) {
-    e.preventDefault();
-    G.composer.input(key);
-    updatePreview();
-    sfxKey();
-  }
-});
+    window.addEventListener('keydown', (e) => {
+      if (!G || G.checking) return;
+      if ($('#game').classList.contains('hidden')) return;
+      if (e.ctrlKey || e.altKey || e.metaKey) return;
 
-/* init */
-buildSetup();
-</script>
+      const key = e.key;
+      if (key.startsWith('F') && key.length > 1) return;
+
+      if (key === 'Backspace') {
+        e.preventDefault();
+        G.composer.backspace();
+        updatePreview();
+        sfxKey();
+      } else if (key === 'Enter') {
+        e.preventDefault();
+        submitKeypad();
+      } else if (KEY_MAP[key]) {
+        e.preventDefault();
+        G.composer.input(KEY_MAP[key]);
+        updatePreview();
+        sfxKey();
+      } else if (ALL_JAMOS.has(key)) {
+        e.preventDefault();
+        G.composer.input(key);
+        updatePreview();
+        sfxKey();
+      }
+    });
+
+    /* init */
+    buildSetup();
+  </script>
 </body>
+
 </html>
