@@ -47,8 +47,10 @@
       font-family: 'Apple SD Gothic Neo', 'Malgun Gothic', 'Noto Sans KR', 'Nanum Gothic', sans-serif;
       color: var(--ink);
       background:
-        radial-gradient(1200px 700px at 15% -10%, #5a2ea0 0%, transparent 55%),
-        radial-gradient(1000px 600px at 100% 0%, #7a2f8f 0%, transparent 50%),
+        radial-gradient(900px 520px at 50% 118%, rgba(255, 207, 63, .14) 0%, transparent 60%),
+        radial-gradient(1100px 640px at 12% -12%, #6a34bd 0%, transparent 56%),
+        radial-gradient(1000px 640px at 102% 4%, #b8388f 0%, transparent 52%),
+        radial-gradient(760px 520px at 88% 108%, #2c9ad6 0%, transparent 55%),
         linear-gradient(160deg, var(--bg1), var(--bg2));
       overflow: hidden;
       touch-action: manipulation;
@@ -88,17 +90,28 @@
     }
 
     .logo-title {
-      font-size: clamp(38px, 7vw, 84px);
+      font-size: clamp(42px, 7.4vw, 92px);
       font-weight: 900;
       letter-spacing: -2px;
       line-height: 1;
       color: #fff;
-      text-shadow: 0 4px 0 #7a35c9, 0 10px 26px rgba(0, 0, 0, .35);
+      text-shadow: 0 4px 0 #7a35c9, 0 10px 26px rgba(0, 0, 0, .35), 0 0 42px rgba(163, 97, 255, .5);
     }
 
     .logo-title .k {
       color: var(--gold);
-      text-shadow: 0 4px 0 var(--gold-d), 0 10px 26px rgba(0, 0, 0, .35);
+      text-shadow: 0 4px 0 var(--gold-d), 0 10px 26px rgba(0, 0, 0, .35), 0 0 34px rgba(255, 207, 63, .6);
+    }
+
+    .logo-title .crown-emoji {
+      display: inline-block;
+      animation: crownFloat 2.6s ease-in-out infinite;
+      filter: drop-shadow(0 6px 10px rgba(0, 0, 0, .4));
+    }
+
+    @keyframes crownFloat {
+      0%, 100% { transform: translateY(0) rotate(-6deg); }
+      50% { transform: translateY(-10px) rotate(6deg); }
     }
 
     /* ---------- SETUP ---------- */
@@ -126,6 +139,21 @@
       color: #e6d8ff;
       font-weight: 700;
       font-size: clamp(13px, 2.2vw, 17px);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .setup-head .sub-badge {
+      background: linear-gradient(180deg, #ffe071, var(--gold));
+      color: #3a2a00;
+      font-weight: 900;
+      padding: 4px 12px;
+      border-radius: 999px;
+      box-shadow: 0 4px 12px rgba(233, 169, 4, .4);
+      letter-spacing: -.3px;
     }
 
     .card {
@@ -210,32 +238,36 @@
       margin-top: 6px;
       width: min(920px, 96vw);
       border-radius: 22px;
-      padding: 20px;
-      font-size: clamp(22px, 3.5vw, 30px);
+      padding: 22px;
+      font-size: clamp(23px, 3.6vw, 32px);
       font-weight: 900;
-      color: #fff;
-      background: rgba(255, 255, 255, 0.12);
-      border: 2.5px solid rgba(255, 255, 255, 0.20);
-      box-shadow: 0 10px 0 rgba(255, 255, 255, 0.15), 0 20px 30px rgba(0, 0, 0, .25);
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
-      transition: transform .06s, box-shadow .06s, background-color .15s, border-color .15s;
+      color: #3a2a00;
+      background: linear-gradient(180deg, #ffe98a 0%, var(--gold) 55%, var(--gold-d) 100%);
+      border: 2.5px solid rgba(255, 255, 255, 0.35);
+      box-shadow: 0 10px 0 var(--gold-d), 0 22px 40px rgba(233, 169, 4, .35);
+      transition: transform .06s, box-shadow .06s, filter .15s;
       text-align: center;
       text-decoration: none;
       display: inline-flex;
       align-items: center;
       justify-content: center;
       box-sizing: border-box;
+      animation: startGlow 2.2s ease-in-out infinite;
+    }
+
+    @keyframes startGlow {
+      0%, 100% { box-shadow: 0 10px 0 var(--gold-d), 0 22px 40px rgba(233, 169, 4, .32); }
+      50% { box-shadow: 0 10px 0 var(--gold-d), 0 22px 54px rgba(255, 207, 63, .62); }
     }
 
     .start-btn:hover {
-      background: rgba(255, 255, 255, 0.20);
-      border-color: rgba(255, 255, 255, 0.30);
+      filter: brightness(1.05);
     }
 
     .start-btn:active {
       transform: translateY(6px);
-      box-shadow: 0 4px 0 rgba(255, 255, 255, 0.15), 0 12px 20px rgba(0, 0, 0, .25);
+      box-shadow: 0 4px 0 var(--gold-d), 0 12px 20px rgba(233, 169, 4, .3);
+      animation: none;
     }
 
     /* 다른 게임 고르기 링크 버튼 스타일 */
@@ -440,6 +472,11 @@
       line-height: 1.1;
     }
 
+    /* 문장(안내 문구)일 때는 폰트를 줄여 화면에 맞춤 */
+    .screen-word.small {
+      font-size: clamp(34px, 8vw, 74px);
+    }
+
     /* 스크린 단어 팝업 애니메이션 */
     .screen-word.pop {
       animation: screenPop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
@@ -487,7 +524,7 @@
       display: flex;
       justify-content: space-between;
       height: 80px;
-      flex: 0 0 80px;
+      flex: 0 0 92px;
       width: 100%;
     }
 
@@ -519,8 +556,10 @@
     }
 
     .pcell.out {
-      opacity: .5;
-      filter: grayscale(.5);
+      opacity: .82;
+      filter: grayscale(.35);
+      background: rgba(255, 93, 115, .12);
+      border-color: rgba(255, 93, 115, .35);
     }
 
     .pcell.active {
@@ -537,30 +576,17 @@
     }
 
     .pbadge {
-      width: 22px;
-      height: 22px;
-      border-radius: 7px;
+      padding: 2px 10px;
+      border-radius: 9px;
       display: flex;
       align-items: center;
       justify-content: center;
       color: #fff;
       font-weight: 900;
-      font-size: 13px;
+      font-size: 20px;
+      line-height: 1.15;
       flex: none;
-      box-shadow: 0 2px 0 rgba(0, 0, 0, .15);
-    }
-
-    .pcell-name {
-      font-weight: 900;
-      font-size: clamp(13px, 1.5vw, 18px);
-      color: #fff;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .pcell.active .pcell-name {
-      color: var(--ink);
+      box-shadow: 0 2px 0 rgba(0, 0, 0, .18);
     }
 
     .pcell-status {
@@ -599,6 +625,15 @@
       word-break: break-all;
     }
 
+    .cellDead {
+      font-weight: 900;
+      color: #ff5d73;
+      line-height: 1.2;
+      font-size: clamp(16px, 2.1vw, 22px);
+      letter-spacing: .5px;
+      text-shadow: 0 2px 8px rgba(0, 0, 0, .45);
+    }
+
     .cellLast.muted {
       color: rgba(255, 255, 255, .45);
       font-size: 13px;
@@ -628,12 +663,13 @@
 
     /* 하단 입력 액션 구역: 높이를 280px로 확대하여 키패드가 완전히 담기게 고정 */
     .game-bottom {
-      height: 280px;
-      flex: 0 0 280px;
+      height: 296px;
+      flex: 0 0 296px;
       display: flex;
       justify-content: space-between;
       min-height: 0;
       width: 100%;
+      padding-bottom: 16px;
     }
 
     .pcell-bottom-action {
@@ -884,8 +920,17 @@
       text-align: center;
     }
 
+    /* 트로피(좌) + 등수 보드(우) 가로 배치 */
+    .result-top {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: clamp(18px, 4vw, 46px);
+      flex-wrap: wrap;
+    }
+
     .trophy {
-      font-size: clamp(80px, 18vw, 150px);
+      font-size: clamp(72px, 15vw, 132px);
       animation: bounce 1.1s ease-in-out infinite;
     }
 
@@ -901,17 +946,61 @@
       }
     }
 
-    .win-name {
-      font-size: clamp(34px, 7vw, 72px);
+    /* 등수 보드: 세로가 길어지지 않게 최대 2열(컬럼 우선 채움) */
+    .rank-board {
+      display: grid;
+      gap: 9px clamp(18px, 3vw, 34px);
+      background: rgba(255, 255, 255, .10);
+      border: 2px solid rgba(255, 255, 255, .14);
+      border-radius: 20px;
+      padding: 16px clamp(16px, 2.4vw, 26px);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .rank-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      justify-content: flex-start;
+    }
+
+    .rank-place {
       font-weight: 900;
+      font-size: clamp(18px, 2.4vw, 26px);
+      color: #d8c8ff;
+      min-width: 2.2em;
+      text-align: right;
+    }
+
+    .rank-item.first .rank-place {
+      color: var(--gold);
+      text-shadow: 0 0 16px rgba(255, 207, 63, .6);
+    }
+
+    .rank-badge {
       color: #fff;
-      text-shadow: 0 4px 0 rgba(0, 0, 0, .25);
+      font-weight: 900;
+      font-size: clamp(16px, 2.2vw, 22px);
+      padding: 4px 15px;
+      border-radius: 11px;
+      box-shadow: 0 3px 0 rgba(0, 0, 0, .18);
+      line-height: 1.2;
+    }
+
+    .rank-item.first .rank-badge {
+      box-shadow: 0 3px 0 rgba(0, 0, 0, .18), 0 0 22px rgba(255, 207, 63, .5);
     }
 
     .win-sub {
       color: #e6d8ff;
       font-weight: 800;
       font-size: clamp(15px, 2.6vw, 20px);
+    }
+
+    .win-sub #winName {
+      color: var(--gold);
+      font-size: 1.25em;
+      font-weight: 900;
     }
 
     .result-stats {
@@ -988,8 +1077,8 @@
     <!-- ===================== SETUP ===================== -->
     <section id="setup">
       <div class="setup-head">
-        <div class="logo-title">끝말잇<span class="k">킹</span> 👑</div>
-        <div class="sub">전자칠판 끝말잇기 · 우리말샘 사전 판정 · 명사 · 5글자 이내</div>
+        <div class="logo-title">끝말잇<span class="k">킹</span> <span class="crown-emoji">👑</span></div>
+        <div class="sub"><span class="sub-badge">전자칠판 끝말잇기</span> 우리말샘 사전 판정 · 명사 · 5글자 이내</div>
       </div>
 
       <div class="card">
@@ -1030,7 +1119,6 @@
 
       <button class="start-btn" id="startBtn">게임 시작 🎮</button>
       <a href="http://킹수학.com" class="sub-link-btn" id="otherGameBtn">다른 게임 고르기</a>
-      <div class="hint">랜덤으로 시작 플레이어와 제시어를 뽑아 드려요.</div>
     </section>
 
     <!-- ===================== GAME ===================== -->
@@ -1066,11 +1154,11 @@
 
     <!-- ===================== RESULT ===================== -->
     <section id="result" class="hidden">
-      <div class="trophy">🏆</div>
-      <div>
-        <div class="win-name" id="winName">1P</div>
-        <div class="win-sub">우승! 👑 끝말잇킹의 왕이 되었어요</div>
+      <div class="result-top">
+        <div class="trophy">🏆</div>
+        <div class="rank-board" id="rankBoard"></div>
       </div>
+      <div class="win-sub">👑 <span id="winName">1번</span> 우승! 끝말잇킹의 왕이 되었어요</div>
       <div class="result-stats" id="resultStats"></div>
       <div class="again">
         <button class="primary" id="againSame">같은 설정으로 다시</button>
@@ -1256,11 +1344,30 @@
       g.gain.exponentialRampToValueAtTime(0.001, c.currentTime + dur);
       o.start(); o.stop(c.currentTime + dur);
     }
+    /* 주파수를 미끄러뜨리며(글리산도) 재생 — 하강 효과음용 */
+    function slide(f1, f2, dur, type = 'sawtooth', vol = 0.14) {
+      const c = ac(); if (!c) return;
+      const o = c.createOscillator(), g = c.createGain();
+      o.type = type;
+      o.frequency.setValueAtTime(f1, c.currentTime);
+      o.frequency.exponentialRampToValueAtTime(Math.max(1, f2), c.currentTime + dur);
+      o.connect(g); g.connect(c.destination);
+      g.gain.setValueAtTime(vol, c.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.001, c.currentTime + dur);
+      o.start(); o.stop(c.currentTime + dur);
+    }
     const sfxKey = () => beep(520, 0.05, 'square', 0.06);
     const sfxOk = () => { beep(660, 0.09, 'sine', 0.16); setTimeout(() => beep(990, 0.14, 'sine', 0.16), 90); };
     const sfxErr = () => { beep(180, 0.18, 'sawtooth', 0.14); };
     const sfxTick = () => beep(880, 0.05, 'sine', 0.10);
     const sfxWin = () => { [523, 659, 784, 1046].forEach((f, i) => setTimeout(() => beep(f, 0.18, 'triangle', 0.18), i * 130)); };
+    /* 하트 감소: 짧은 하강 "쿵" 데미지음 */
+    const sfxHeart = () => { slide(660, 300, 0.18, 'triangle', 0.16); setTimeout(() => beep(150, 0.14, 'sine', 0.13), 55); };
+    /* 탈락: 극적인 하강 "슬픈 트롬본" 연출음 */
+    const sfxOut = () => {
+      const notes = [[294, 262], [262, 233], [233, 220], [196, 160]];
+      notes.forEach((n, i) => setTimeout(() => slide(n[0], n[1], i === 3 ? 0.5 : 0.22, 'sawtooth', 0.16), i * 220));
+    };
 
     /* 브라우저 TTS 한국어 발음 재생 */
     function speak(text) {
@@ -1275,20 +1382,26 @@
       } catch (e) { }
     }
 
+    /* 숫자를 한자어(사이시옷) 읽기로 변환 — "4번"을 '네번'이 아닌 '사번'으로 읽게 함 */
+    const SINO_NUM = ['영', '일', '이', '삼', '사', '오', '육', '칠', '팔', '구', '십'];
+    function numRead(n) { return SINO_NUM[n] != null ? SINO_NUM[n] : String(n); }
+    function nameRead(p) { return numRead(p.id + 1) + '번'; }
+
     /* 중앙 전광판 스크택스트 동기화 */
     function updateCenterScreen(type, word, color) {
       const label = $('#screenLabel');
       const wordEl = $('#screenWord');
       const screen = $('#centerScreen');
+      wordEl.classList.remove('small');
 
       if (type === 'seed') {
         label.textContent = '제시어';
-        wordEl.textContent = word + '!';
+        wordEl.textContent = word;
         screen.style.setProperty('--pcol', 'var(--gold)');
       } else {
         const pName = G ? G.players[G.cur].name : '';
         label.textContent = pName ? pName + ' 성공!' : '최근 성공 단어';
-        wordEl.textContent = word + '!';
+        wordEl.textContent = word;
         screen.style.setProperty('--pcol', color || '#fff');
       }
     }
@@ -1309,6 +1422,46 @@
       setTimeout(() => {
         if (callback) callback();
       }, 1500);
+    }
+
+    /* 중앙 전광판에 라벨/단어를 팝업 애니메이션과 함께 표시 */
+    function setCenterScreen(label, word, color, small) {
+      $('#screenLabel').textContent = label || '';
+      const wordEl = $('#screenWord');
+      wordEl.textContent = word || '';
+      wordEl.classList.toggle('small', !!small);
+      $('#centerScreen').style.setProperty('--pcol', color || 'var(--gold)');
+      wordEl.classList.remove('pop');
+      void wordEl.offsetWidth; // Reflow 트리거
+      wordEl.classList.add('pop');
+    }
+
+    /* 게임 시작 시: 선(순서)을 정하는 연출 시퀀스 (중앙 전광판, 5초 카운트다운) */
+    function runStartSequence(callback) {
+      const first = G.players[G.cur];
+      const num = (n) => { setCenterScreen('자리를 잡으세요', String(n), null, false); sfxTick(); };
+
+      setCenterScreen('선을 정합니다', '자리를 잡으세요', null, true);
+      speak('선을 정합니다. 자리를 잡으세요');
+
+      const steps = [
+        { t: 1600, run: () => num(5) },
+        { t: 1000, run: () => num(4) },
+        { t: 1000, run: () => num(3) },
+        { t: 1000, run: () => num(2) },
+        { t: 1000, run: () => num(1) },
+        { t: 1000, run: () => { setCenterScreen('선은!', first.name, first.color, false); sfxOk(); speak('선은 ' + nameRead(first)); } },
+        { t: 1700, run: () => { if (callback) callback(); } }
+      ];
+
+      let i = 0;
+      function next() {
+        if (i >= steps.length) return;
+        const step = steps[i];
+        i++;
+        setTimeout(() => { step.run(); next(); }, step.t);
+      }
+      next();
     }
 
     /* =========================================================
@@ -1413,22 +1566,28 @@
         chain: [{ type: 'seed', word: seed }],
         reqChar: applyDeum(seed[seed.length - 1]),
         turns: 0, timer: null, remain: 0, composer: new Hangul(),
-        kbShift: false, checking: false, warnedOffline: false, seed
+        kbShift: false, checking: false, warnedOffline: false, seed,
+        introPhase: true // 선 정하기 연출 동안엔 활성 플레이어 없이 모두 대기 상태
       };
       $('#setup').classList.add('hidden');
       $('#result').classList.add('hidden');
       $('#game').classList.remove('hidden');
-      renderChain();
+      $('#chain').innerHTML = ''; // 선 정하기 연출 동안 상단 체인바는 비워둠
+      renderGrid();
 
-      // 첫 제시어 팝업 연출 후 턴 시작
-      showWordOverlay('seed', seed, null, () => {
-        startTurn();
+      // 선(순서) 정하기 연출 → 첫 제시어 팝업 연출(이때 체인바에 제시어 표시) → 턴 시작
+      runStartSequence(() => {
+        renderChain();
+        showWordOverlay('seed', seed, null, () => {
+          startTurn();
+        });
       });
     }
     function aliveIdx() { return G.players.map((p, i) => p.out ? -1 : i).filter(i => i >= 0); }
     function nextAlive(from) { const n = G.players.length; for (let k = 1; k <= n; k++) { const i = (from + k) % n; if (!G.players[i].out) return i; } return from; }
 
     function startTurn() {
+      G.introPhase = false; // 연출 종료 → 현재 플레이어 활성화(깜빡임/입력 가능)
       G.composer.reset();
       G.composer.committed = G.reqChar; // 첫 글자 기본 입력 처리
       G.kbShift = false; G.checking = false;
@@ -1489,7 +1648,7 @@
 
       for (let i = 0; i < G.players.length; i++) {
         const p = G.players[i];
-        const active = (i === G.cur && !p.out);
+        const active = (i === G.cur && !p.out && !G.introPhase);
 
         // 1. 상단 플레이어 정보 카드
         const cell = el('div', 'pcell');
@@ -1498,22 +1657,26 @@
         cell.style.setProperty('--pcol', p.color);
 
         const head = el('div', 'pcell-head');
-        const badge = el('span', 'pbadge'); badge.textContent = (i + 1); badge.style.background = p.color;
-        const nm = el('span', 'pcell-name'); nm.textContent = p.name;
+        const badge = el('span', 'pbadge'); badge.textContent = p.name; badge.style.background = p.color;
         const st = el('span', 'pcell-status');
-        if (p.out) { const o = el('span', 'outtag'); o.textContent = '아웃'; st.appendChild(o); }
-        else if (G.elim === 'heart') { const l = el('span', 'life'); l.textContent = '❤️'.repeat(p.hearts); st.appendChild(l); }
-        head.append(badge, nm, st); cell.appendChild(head);
+        if (!p.out && G.elim === 'heart') { const l = el('span', 'life'); l.textContent = '❤️'.repeat(p.hearts); st.appendChild(l); }
+        head.append(badge, st); cell.appendChild(head);
 
         const body = el('div', 'pcell-body');
-        const last = el('div', 'cellLast');
-        if (active) {
-          last.textContent = '입력 중...';
-          last.classList.add('typing-status');
+        if (p.out) {
+          const dead = el('div', 'cellDead');
+          dead.innerHTML = '탈락<br>' + (p.rank ? p.rank + '등' : '');
+          body.appendChild(dead);
         } else {
-          if (p.lastWord) { last.textContent = p.lastWord; } else { last.textContent = '대기 중'; last.classList.add('muted'); }
+          const last = el('div', 'cellLast');
+          if (active) {
+            last.textContent = '입력 중...';
+            last.classList.add('typing-status');
+          } else {
+            if (p.lastWord) { last.textContent = p.lastWord; } else { last.textContent = '대기 중'; last.classList.add('muted'); }
+          }
+          body.appendChild(last);
         }
-        body.appendChild(last);
         cell.appendChild(body);
         grid.appendChild(cell);
 
@@ -1750,26 +1913,41 @@
     function onFail(reason) {
       if (!G || G.checking) return;
       stopTimer();
-      const p = G.players[G.cur]; sfxErr();
+      const p = G.players[G.cur];
       if (G.elim === 'out') p.out = true;
       else { p.hearts = Math.max(0, p.hearts - 1); if (p.hearts <= 0) p.out = true; }
+      // 탈락 시 등수 계산 (먼저 탈락할수록 낮은 등수) → 카드에 표시
+      if (p.out) p.rank = aliveIdx().length + 1;
       renderGrid();
-      flash(reason + (p.out ? ' · ' + p.name + ' 아웃!' : ' · ' + p.name + ' 하트 -1'));
 
-      const alive = aliveIdx();
-      if (alive.length <= 1) { setTimeout(endGame, 800); return; }
+      // 남은 플레이어가 1명 이하로 판정되면 게임 종료로 진행
+      const proceed = () => {
+        const alive = aliveIdx();
+        if (alive.length <= 1) { setTimeout(endGame, 300); return; }
 
-      const seed = EASY_SEEDS[(Math.random() * EASY_SEEDS.length) | 0];
-      G.chain.push({ type: 'seed', word: seed });
-      G.reqChar = applyDeum(seed[seed.length - 1]);
-      G.used.add(seed);
-      renderChain();
+        const seed = EASY_SEEDS[(Math.random() * EASY_SEEDS.length) | 0];
+        G.chain.push({ type: 'seed', word: seed });
+        G.reqChar = applyDeum(seed[seed.length - 1]);
+        G.used.add(seed);
+        renderChain();
 
-      // 새 제시어 전광판 연출 후 다음 플레이어로 시작
-      showWordOverlay('seed', seed, null, () => {
-        G.cur = nextAlive(G.cur);
-        startTurn();
-      });
+        // 새 제시어 전광판 연출 후 다음 플레이어로 시작
+        showWordOverlay('seed', seed, null, () => {
+          G.cur = nextAlive(G.cur);
+          startTurn();
+        });
+      };
+
+      if (p.out) {
+        // 탈락: 효과음만 재생 (음성 안내 없음), 등수는 각 카드에 표시됨
+        sfxOut();
+        setTimeout(proceed, 1500);
+      } else {
+        // 하트 감소: 데미지 효과음
+        sfxHeart();
+        flash(reason + ' · ' + p.name + ' 하트 -1');
+        proceed();
+      }
     }
     function flash(msg) {
       const t = el('div', 'toast'); t.textContent = msg;
@@ -1783,9 +1961,27 @@
     function endGame() {
       stopTimer();
       const winner = aliveIdx().length ? G.players[aliveIdx()[0]] : G.players[G.cur];
+      winner.rank = 1; // 최후 생존자는 1등
       $('#game').classList.add('hidden');
       $('#result').classList.remove('hidden');
-      const wn = $('#winName'); wn.textContent = winner.name; wn.style.color = '#fff'; wn.style.textShadow = '0 4px 0 ' + winner.color;
+      $('#winName').textContent = winner.name;
+
+      // 전체 등수 나열 (1등부터) — 트로피 오른쪽, 최대 2열로 배치
+      const ranked = [...G.players].sort((a, b) => (a.rank || 99) - (b.rank || 99));
+      const n = ranked.length;
+      const rows = n <= 3 ? n : Math.ceil(n / 2);
+      const board = $('#rankBoard');
+      board.innerHTML = '';
+      board.style.gridTemplateRows = 'repeat(' + rows + ', auto)';
+      board.style.gridAutoFlow = 'column';
+      ranked.forEach((p, i) => {
+        const item = el('div', 'rank-item' + (i === 0 ? ' first' : ''));
+        const place = el('span', 'rank-place'); place.textContent = (p.rank || (i + 1)) + '등';
+        const badge = el('span', 'rank-badge'); badge.textContent = p.name; badge.style.background = p.color;
+        item.append(place, badge);
+        board.appendChild(item);
+      });
+
       const wordCount = G.chain.length;
       $('#resultStats').innerHTML =
         '<span>이어진 단어 <b>' + wordCount + '</b>개</span>' +
