@@ -1233,6 +1233,12 @@
       return [...out];
     }
 
+    /* 두음법칙 병기 표기용 문자열 생성 (예: "로/노") */
+    function getReqChar(ch) {
+      const variants = deumVariants(ch);
+      return variants.join('/');
+    }
+
     class Hangul {
       constructor() { this.reset(); }
       reset() { this.committed = ''; this.cho = -1; this.jung = -1; this.jong = 0; }
@@ -1505,8 +1511,9 @@
     function urimalAnalyze(data, word) {
       const ch = data && data.channel;
       let items = ch && ch.item ? (Array.isArray(ch.item) ? ch.item : [ch.item]) : [];
-      const norm = s => String(s || '').replace(/[^가-힣]/g, '');
-      const exact = items.filter(it => norm(it.word) === word);
+      // 공백, 붙임표, 다양한 가로줄 기호, 띄어쓰기 기호(^)를 제거합니다.
+      const norm = s => String(s || '').replace(/[\s\-\–\—\―\－\^]/g, '');
+      const exact = items.filter(it => norm(it.word) === norm(word));
       if (!exact.length) return { found: false };
       let sawPos = false, noun = false, proper = false;
       for (const it of exact) {
@@ -1564,7 +1571,7 @@
         cur: (Math.random() * players.length) | 0,
         used: new Set([seed]),
         chain: [{ type: 'seed', word: seed }],
-        reqChar: applyDeum(seed[seed.length - 1]),
+        reqChar: getReqChar(seed[seed.length - 1]),
         turns: 0, timer: null, remain: 0, composer: new Hangul(),
         kbShift: false, checking: false, warnedOffline: false, seed,
         introPhase: true // 선 정하기 연출 동안엔 활성 플레이어 없이 모두 대기 상태
@@ -1690,9 +1697,7 @@
 
           const reqBox = el('div', 'req-char-box');
           const reqSyl = el('span', 'req-syl-inline'); reqSyl.textContent = G.reqChar;
-          const alts = deumVariants(G.reqChar).filter(c => c !== G.reqChar);
-          const reqAlt = el('span', 'req-alt-inline'); reqAlt.textContent = alts.length ? ' 또는 ' + alts.join('·') : '';
-          reqBox.append(reqSyl, reqAlt);
+          reqBox.append(reqSyl);
 
           const pv = el('div', 'cellPreview'); pv.id = 'activePreview';
           const fb = el('div', 'cellFeedback'); fb.id = 'activeFeedback';
@@ -1800,21 +1805,33 @@
       if (!G || G.checking) return;
       const word = G.composer.text.trim();
       if (!word) { setFeedback('글자를 입력해 주세요.', 'err'); sfxErr(); return; }
-      for (const ch of word) { if (ch < '가' || ch > '힣') { setFeedback('완성되지 않은 글자가 있어요.', 'err'); sfxErr(); return; } }
 
-      // 1. 이전 단어의 마지막 한 글자로부터 두음법칙 변이 집합을 가져옵니다.
-      const lastWord = G.chain[G.chain.length - 1].word;
-      const lastChar = lastWord[lastWord.length - 1];
-      const firstCharVariants = deumVariants(lastChar);
-      const suffix = word.substring(1);
+      // 1. 입력 텍스트에서 제시된 첫 글자(병기된 경우 포함)를 제외한 나머지 suffix를 추출합니다.
+      let suffix = '';
+      if (word.startsWith(G.reqChar)) {
+        suffix = word.substring(G.reqChar.length);
+      } else {
+        suffix = word.substring(1);
+      }
 
-      // 2. 두음법칙 후보 단어들을 만듭니다. (사용자가 입력한 단어 word를 최우선 순위로 설정)
-      const candidatesSet = new Set();
-      candidatesSet.add(word);
-      firstCharVariants.forEach(v => {
-        candidatesSet.add(v + suffix);
-      });
-      const candidates = [...candidatesSet];
+      if (!suffix) {
+        setFeedback('두 글자 이상 입력해 주세요.', 'err');
+        sfxErr();
+        return;
+      }
+
+      // suffix의 각 글자가 올바른 한글인지 검사
+      for (const ch of suffix) {
+        if (ch < '가' || ch > '힣') {
+          setFeedback('완성되지 않은 글자가 있어요.', 'err');
+          sfxErr();
+          return;
+        }
+      }
+
+      // 2. 병기된 첫 글자 후보들을 '/'로 분리하여 suffix와 결합해 후보 단어들을 생성합니다.
+      const firstChars = G.reqChar.split('/');
+      const candidates = firstChars.map(firstChar => firstChar + suffix);
 
       // 3. 로컬 체크 (글자수 2~5자, 이미 사용 여부) 필터링
       const validCandidates = candidates.filter(cand => {
@@ -1889,7 +1906,7 @@
       G.used.add(winner);
       G.players[G.cur].lastWord = winner;
       G.chain.push({ word: winner, by: G.cur });
-      G.reqChar = applyDeum(winner[winner.length - 1]);
+      G.reqChar = getReqChar(winner[winner.length - 1]);
       renderChain();
 
       setFeedback(source === 'offline' ? '정답! (오프라인 사전) 🎉' : '정답! 🎉', 'ok'); sfxOk();
@@ -1927,7 +1944,7 @@
 
         const seed = EASY_SEEDS[(Math.random() * EASY_SEEDS.length) | 0];
         G.chain.push({ type: 'seed', word: seed });
-        G.reqChar = applyDeum(seed[seed.length - 1]);
+        G.reqChar = getReqChar(seed[seed.length - 1]);
         G.used.add(seed);
         renderChain();
 
