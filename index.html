@@ -1541,12 +1541,41 @@
     }
     async function checkWord(word) {
       if (DICT.has(word)) return { ok: true, source: 'offline' };
-      const r = await urimalFetch(word);
+      let r = await urimalFetch(word);
       if (r.ok) {
         const a = urimalAnalyze(r.data, word);
         if (a.found && a.noun) return { ok: true, source: 'online' };
         if (a.found && a.proper) return { ok: false, reason: '고유명사(인명, 지명 등)는 사용할 수 없어요', source: 'online' };
         if (a.found && !a.noun) return { ok: false, reason: '명사가 아니에요 (우리말샘)', source: 'online' };
+      }
+
+      // 하이픈(-) 포함 단어에 대한 대비책 (예: 자개그릇 -> 자개-그릇)
+      if (word.length >= 3) {
+        const hyphenCandidates = [];
+        for (let i = 1; i < word.length; i++) {
+          hyphenCandidates.push(word.substring(0, i) + '-' + word.substring(i));
+        }
+        try {
+          const fetchResults = await Promise.all(hyphenCandidates.map(async (hCand) => {
+            const hr = await urimalFetch(hCand);
+            if (hr.ok) {
+              const ha = urimalAnalyze(hr.data, word);
+              return { ok: ha.found && ha.noun, proper: ha.found && ha.proper, reason: ha.reason };
+            }
+            return { ok: false };
+          }));
+
+          const success = fetchResults.find(x => x.ok);
+          if (success) return { ok: true, source: 'online' };
+
+          const properMatch = fetchResults.find(x => x.proper);
+          if (properMatch) return { ok: false, reason: '고유명사(인명, 지명 등)는 사용할 수 없어요', source: 'online' };
+        } catch (e) {
+          // Fallback
+        }
+      }
+
+      if (r.ok) {
         return { ok: false, reason: '우리말샘에 없는 단어예요', source: 'online' };
       }
       return { ok: false, reason: '사전에 없는 단어예요 (오프라인)', source: 'offline' };
