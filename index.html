@@ -1495,11 +1495,10 @@
     ========================================================= */
     const URIMAL_KEY = '8F102F8109E1CA5966761BC6E88A5ED8';
     async function urimalFetch(word) {
-      const targetUrl = 'https://opendict.korean.go.kr/api/search?key=' + URIMAL_KEY
+      const url = 'https://opendict.korean.go.kr/api/search?key=' + URIMAL_KEY
         + '&q=' + encodeURIComponent(word) + '&req_type=json&advanced=y&method=exact&num=10';
-      const url = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(targetUrl);
       const ctrl = new AbortController();
-      const to = setTimeout(() => ctrl.abort(), 4000);
+      const to = setTimeout(() => ctrl.abort(), 8000);
       try {
         const res = await fetch(url, { signal: ctrl.signal });
         clearTimeout(to);
