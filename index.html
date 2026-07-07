@@ -1168,7 +1168,7 @@
 
   </div>
 
-  <script src="nouns.js"></script>
+  <script src="nouns.js?v=20260707_final"></script>
   <script>
     "use strict";
 
@@ -1493,19 +1493,39 @@
     /* =========================================================
        우리말샘 오픈 API (단어 검증)
     ========================================================= */
-    const URIMAL_KEY = '8F102F8109E1CA5966761BC6E88A5ED8';
+        const URIMAL_KEY = '8F102F8109E1CA5966761BC6E88A5ED8';
     async function urimalFetch(word) {
-      const url = 'https://opendict.korean.go.kr/api/search?key=' + URIMAL_KEY
+      const targetUrl = 'https://opendict.korean.go.kr/api/search?key=' + URIMAL_KEY
         + '&q=' + encodeURIComponent(word) + '&req_type=json&advanced=y&method=exact&num=10';
-      const ctrl = new AbortController();
-      const to = setTimeout(() => ctrl.abort(), 8000);
+      const ctrl1 = new AbortController();
+      const to1 = setTimeout(() => ctrl1.abort(), 5000);
+      
+      // 1차 시도: CORS 우회 확장 프로그램 또는 직접 API 호출 (더블클릭 로컬 구동 시)
       try {
-        const res = await fetch(url, { signal: ctrl.signal });
-        clearTimeout(to);
+        const res = await fetch(targetUrl, { signal: ctrl1.signal });
+        clearTimeout(to1);
+        if (res.ok) {
+          const data = await res.json();
+          return { ok: true, data };
+        }
+      } catch (e1) {
+        clearTimeout(to1);
+      }
+
+      // 2차 시도: 웹 서버 상에 올려 구동할 때를 위한 프록시 PHP 호출 폴백
+      const ctrl2 = new AbortController();
+      const to2 = setTimeout(() => ctrl2.abort(), 5000);
+      try {
+        const url = 'proxy.php?q=' + encodeURIComponent(word);
+        const res = await fetch(url, { signal: ctrl2.signal });
+        clearTimeout(to2);
         if (!res.ok) throw new Error('HTTP ' + res.status);
         const data = await res.json();
         return { ok: true, data };
-      } catch (e) { clearTimeout(to); return { ok: false, error: e }; }
+      } catch (e2) {
+        clearTimeout(to2);
+        return { ok: false, error: e2 };
+      }
     }
     function urimalAnalyze(data, word) {
       const ch = data && data.channel;
@@ -1545,40 +1565,11 @@
       if (r.ok) {
         const a = urimalAnalyze(r.data, word);
         if (a.found && a.noun) return { ok: true, source: 'online' };
-        if (a.found && a.proper) return { ok: false, reason: '고유명사(인명, 지명 등)는 사용할 수 없어요', source: 'online' };
-        if (a.found && !a.noun) return { ok: false, reason: '명사가 아니에요 (우리말샘)', source: 'online' };
+        if (a.found && a.proper) return { ok: false, reason: '고유명사는 쓸 수 없어요', source: 'online' };
+        if (a.found && !a.noun) return { ok: false, reason: '명사가 아니에요', source: 'online' };
+        return { ok: false, reason: '사전에 없는 단어예요', source: 'online' };
       }
-
-      // 하이픈(-) 포함 단어에 대한 대비책 (예: 자개그릇 -> 자개-그릇)
-      if (word.length >= 3) {
-        const hyphenCandidates = [];
-        for (let i = 1; i < word.length; i++) {
-          hyphenCandidates.push(word.substring(0, i) + '-' + word.substring(i));
-        }
-        try {
-          const fetchResults = await Promise.all(hyphenCandidates.map(async (hCand) => {
-            const hr = await urimalFetch(hCand);
-            if (hr.ok) {
-              const ha = urimalAnalyze(hr.data, word);
-              return { ok: ha.found && ha.noun, proper: ha.found && ha.proper, reason: ha.reason };
-            }
-            return { ok: false };
-          }));
-
-          const success = fetchResults.find(x => x.ok);
-          if (success) return { ok: true, source: 'online' };
-
-          const properMatch = fetchResults.find(x => x.proper);
-          if (properMatch) return { ok: false, reason: '고유명사(인명, 지명 등)는 사용할 수 없어요', source: 'online' };
-        } catch (e) {
-          // Fallback
-        }
-      }
-
-      if (r.ok) {
-        return { ok: false, reason: '우리말샘에 없는 단어예요', source: 'online' };
-      }
-      return { ok: false, reason: '사전에 없는 단어예요 (오프라인)', source: 'offline' };
+      return { ok: false, reason: '사전에 없는 단어예요', error: r.error, source: 'online' };
     }
 
     /* =========================================================
@@ -1831,8 +1822,13 @@
 
     async function submitKeypad() {
       if (!G || G.checking) return;
-      const word = G.composer.text.trim();
+      let word = G.composer.text.trim();
       if (!word) { setFeedback('글자를 입력해 주세요.', 'err'); sfxErr(); return; }
+
+      // 사용자 중복 입력 예외 보정: 제시글자가 "산"인데 사용자가 "산산토끼"로 중복 입력한 경우 앞의 "산"을 제거
+      if (G.reqChar.length === 1 && word.length >= 2 && word.startsWith(G.reqChar + G.reqChar)) {
+        word = word.substring(1);
+      }
 
       // 1. 입력 텍스트에서 제시된 첫 글자(병기된 경우 포함)를 제외한 나머지 suffix를 추출합니다.
       let suffix = '';
@@ -1879,7 +1875,8 @@
         return;
       }
 
-      G.checking = true; setFeedback('우리말샘에서 확인 중… ⏳', 'checking');
+      G.checking = true;
+      setFeedback(`우리말샘 확인 중 (오프라인:${typeof OFFLINE_NOUNS !== 'undefined' ? 'OK' : 'FAIL'}) ⏳`, 'checking');
 
       // 4. 내장 사전에 후보 단어가 있는지 우선 확인
       let winner = null;
@@ -1904,7 +1901,9 @@
             winner = successObj.cand;
           } else {
             const originalResult = results.find(item => item.cand === word) || results[0];
-            setFeedback(originalResult.r.reason || '사전에 없는 단어예요.', 'err');
+            const dbgOfflineStatus = (typeof OFFLINE_NOUNS !== 'undefined') ? `OFFLINE:${DICT.has(word)}` : 'OFFLINE_ERR';
+            const dbgOnlineError = originalResult.r.error ? `Err:${originalResult.r.error.message || originalResult.r.error}` : 'NoAPI';
+            setFeedback(`${originalResult.r.reason || '사전에 없는 단어예요'} [${dbgOfflineStatus} / ${dbgOnlineError}]`, 'err');
             sfxErr();
             G.checking = false;
             if (G.remain <= 0) {
@@ -1915,7 +1914,7 @@
             return;
           }
         } catch (e) {
-          setFeedback('사전 조회 중 오류가 발생했어요.', 'err');
+          setFeedback(`사전 조회 오류: ${e.message}`, 'err');
           sfxErr();
           G.checking = false;
           if (G.remain <= 0) {
